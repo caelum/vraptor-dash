@@ -5,6 +5,7 @@ import org.apache.commons.mail.EmailException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.caelum.vraptor.util.hibernate.SessionCreator;
 
