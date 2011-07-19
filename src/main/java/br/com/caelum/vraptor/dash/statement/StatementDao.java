@@ -48,8 +48,8 @@ public class StatementDao {
 		session.merge(statement);
 	}
 
-	public Statement load(Long idStatement) {
-		return (Statement) session.load(Statement.class, idStatement);
+	public Statement load(String id) {
+		return (Statement) session.load(Statement.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
