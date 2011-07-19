@@ -1,44 +1,44 @@
-## vraptor-freemarker
+## vraptor-dash
 
-A simple freemarker engine for rendering templates from within jar files, or rendering email etc.
+A dashboard with several tools for your vraptor project.
 
 # installing
 
-Vraptor-freemarker.jar can be downloaded from mavens repository, or configured in any compatible tool:
+It's possible to download its jar from maven's repository (see mvnrepository.com) or any other compatible tool such as maven (gradle, ivy and so on):
 
 		<dependency>
 			<groupId>br.com.caelum.vraptor</groupId>
-			<artifactId>vraptor-freemarker</artifactId>
+			<artifactId>vraptor-dash</artifactId>
 			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 
 
-# usage for rendering pages
+# Configuring
 
-@Resource
-public class DashboardController {
+Add the entity to your hibernate.cfg.xml:
 
-	private final User user;
-	private final Freemarker freemarker;
-
-	public DashboardController(User user, Freemarker freemarker) {
-		this.user = user;
-		this.freemarker = freemarker;
-	}
+	br.com.caelum.vraptor.dash.statement.Statement
 	
-	@Path("/admin/dashboard")
-	@Get
-	public void list() throws IOException, TemplateException {
-		freemarker.use("dashboard").with("currentUser", user).render();
-	}
+Create a component that implements StatementAwareUser:
+
+	@Component
+	public class StatementCheck implements StatementAwareUser {
 	
-}
+		private final User user;
+		public StatementCheck(User user) {
+			this.user = user;
+		}
+	
+		public boolean canCreateStatements() {
+			return true; // this is the admin user who is capable of seeing all statements and creating new ones. this is "GOD"
+		}
+	}
 
-# usage for rendering emails
+# Accessing
 
-String body = freemarker.use("send_mail_notification").with("currentUser", user).getContent();
+Go to /dash/statements
 
-# help
+# Help
 
-Get help from vraptor developers and the community at vraptor mailing list.
+Get help at VRaptor's mailing list
