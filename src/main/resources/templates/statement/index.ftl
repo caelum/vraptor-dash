@@ -3,10 +3,10 @@
 	<form id="frmStatement" action='' method="post" >
 		<div style="float:left; padding: 3px;margin: 2px;" >
 			<label class="strong">Name</label>: &nbsp;
-			<input id="assuntoStmt" type="text" name="statement.name" value="${statement.name}"/><br/><br/>
+			<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>
 			<label class="strong">Password</label>: &nbsp;
-			<input id="passwordStmt" type="password" name="statement.password" value="${statement.password}"/><br/><br/>
-			<textarea id="hqlToExecute" rows="10" cols="10" name="statement.hql">${statement.hql}</textarea>
+			<input id="passwordStmt" type="password" name="statement.password" value=""/><br/><br/>
+			<textarea id="hqlToExecute" rows="10" cols="10" name="statement.hql"></textarea>
 		</div>
 
 		<div style="padding-top:3px; clear:left">
