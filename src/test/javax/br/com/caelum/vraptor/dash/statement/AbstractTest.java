@@ -10,13 +10,14 @@ import org.junit.BeforeClass;
 
 public class AbstractTest {
 
-	private SessionFactory factory;
+	private static SessionFactory factory;
 	protected Session session;
 
 	@BeforeClass
-	public void setup() {
-		this.factory = new AnnotationConfiguration().configure()
+	public static void setup() {
+		factory = new AnnotationConfiguration().configure().addAnnotatedClass(Statement.class)
 				.buildSessionFactory();
+		
 	}
 
 	@Before
@@ -32,7 +33,7 @@ public class AbstractTest {
 	}
 
 	@AfterClass
-	public void shutdown() {
+	public static void shutdown() {
 		if (factory != null) {
 			factory.close();
 		}

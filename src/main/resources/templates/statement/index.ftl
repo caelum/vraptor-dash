@@ -1,7 +1,4 @@
-<#if hasError>
-	<div class="errors"><fmt:message key="statement.erro" /></div>
-</#if>
-<h2 class="pagetitle"><fmt:message key="statement" /></h2>
+<h2 class="pagetitle">Statement</h2>
 <div style="float:left" class="formulario">
 	<form id="frmStatement" action='' method="post" >
 		<div style="float:left; padding: 3px;margin: 2px;" >
