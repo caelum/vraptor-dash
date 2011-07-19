@@ -2,10 +2,10 @@ package br.com.caelum.vraptor.dash.statement;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.hibernate.annotations.*;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity(name = "DashStatement")
 @Table(name="DashStatement")
@@ -76,11 +76,11 @@ public class Statement {
 	}
 
 	public boolean canBeAccessedWithKey(String key) {
-		return !isPasswordProtected() || password.equals(key);
+		return isOpenForOthersWithPassword() && password.equals(key);
 	}
 	
-	public boolean isPasswordProtected() {
-		return !(password==null || password.isEmpty());
+	public boolean isOpenForOthersWithPassword() {
+		return password!=null && !password.isEmpty();
 	}
 
 }

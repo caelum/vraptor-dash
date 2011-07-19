@@ -46,7 +46,13 @@
 						<td>
 							<a id="tituloStmt_${stmt.id}" href="statements/${stmt.id}">${stmt.name}</a>
 						</td>
-						<td id=""><#if stmt.passwordProtected>password</#if></td>
+						<td id="">
+							<#if stmt.openForOthersWithPassword>
+								open for password
+							<#else>
+								totally closed
+							</#if>
+						</td>
 						<td id="corpoStmt_${stmt.id}">${stmt.hql}</td>
 						<td>
 							<a href="" onclick="alert('todo: support to remove, just link and do a method DELETE on it');" id="remove_${stmt.id}">remove</a>
