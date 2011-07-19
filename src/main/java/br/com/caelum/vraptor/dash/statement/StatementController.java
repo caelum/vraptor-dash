@@ -1,5 +1,8 @@
 package br.com.caelum.vraptor.dash.statement;
 
+import java.io.IOException;
+
+import freemarker.template.TemplateException;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
@@ -7,6 +10,7 @@ import br.com.caelum.vraptor.Put;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.validator.ValidationMessage;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
@@ -18,33 +22,34 @@ public class StatementController {
 	private final Validator validator;
 	private final StatementDao statements;
 	private final StatementAwareUser currentUser;
+	private final Freemarker marker;
 
-	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser) {
+	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser, Freemarker marker) {
 		this.result = result;
 		this.validator = validator;
 		this.statements = statementDao;
 		this.currentUser = currentUser;
+		this.marker = marker;
 	}
 
 	@Path("/dash/statements")
 	@Get
-	public void index() {
+	public void index() throws IOException, TemplateException {
 		if (currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
-		result.include("statements", statements.all());
+		marker.use("index").with("statements", statements.all()).render();
 	}
 
 	@Path("/dash/statements/{statement.id}")
 	@Get
-	public void show(Statement statement, String password) {
+	public void show(Statement statement, String password) throws IOException, TemplateException {
 		statement = statements.load(statement.getId());
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
 			validaStatement(statement);
-			result.include("statement", statement);
-			result.include("resultado", statements.execute(statement));
+			marker.use("show").with("statement", statement).with("resultado", statements.execute(statement)).render();
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}
@@ -52,7 +57,7 @@ public class StatementController {
 
 	@Path("/dash/statements")
 	@Post
-	public void create(Statement statement) {
+	public void create(Statement statement) throws IOException, TemplateException {
 		if (currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
@@ -64,7 +69,7 @@ public class StatementController {
 
 	@Path("/dash/statements/{statement.id}")
 	@Put
-	public void update(Statement statement) {
+	public void update(Statement statement) throws IOException, TemplateException {
 		validaStatement(statement);
 		if (currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
@@ -79,7 +84,7 @@ public class StatementController {
 		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
 	}
 
-	private void validaStatement(Statement statement) {
+	private void validaStatement(Statement statement) throws IOException, TemplateException {
 		try {
 			statement.valida(statements);
 		} catch (IllegalArgumentException e) {
