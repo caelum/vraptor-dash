@@ -35,7 +35,7 @@ public class StatementController {
 	@Path("/dash/statements")
 	@Get
 	public void index() throws IOException, TemplateException {
-		if (currentUser.canCreateStatements()) {
+		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
@@ -58,7 +58,7 @@ public class StatementController {
 	@Path("/dash/statements")
 	@Post
 	public void create(Statement statement) throws IOException, TemplateException {
-		if (currentUser.canCreateStatements()) {
+		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
@@ -71,7 +71,7 @@ public class StatementController {
 	@Put
 	public void update(Statement statement) throws IOException, TemplateException {
 		validaStatement(statement);
-		if (currentUser.canCreateStatements()) {
+		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
