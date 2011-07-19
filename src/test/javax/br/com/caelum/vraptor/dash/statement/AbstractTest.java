@@ -1,51 +1,41 @@
 package br.com.caelum.vraptor.dash.statement;
 
-import org.hibernate.jdbc.Expectations;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.classic.Session;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 public class AbstractTest {
 
-	private Mockery mockery;
+	private SessionFactory factory;
+	protected Session session;
+
+	@BeforeClass
+	public void setup() {
+		this.factory = new AnnotationConfiguration().configure()
+				.buildSessionFactory();
+	}
 
 	@Before
-	public void before() {
-		this.mockery = new Mockery() {
-			{
-				setImposteriser(ClassImposteriser.INSTANCE);
-			}
-		};
+	public void setupSession() {
+		this.session = factory.openSession();
 	}
 
-	public <T> T mock(Class<T> type) {
-		return mockery.mock(type);
+	@After
+	public void shutdownSession() {
+		if (this.session != null) {
+			this.session.close();
+		}
 	}
 
-	public <T> T mock(Class<T> type, String name) {
-		return mockery.mock(type, name);
-	}
-
-	public <T> T stub(Class<T> type) {
-		final T mock = mockery.mock(type);
-		mockery.checking(new Expectations() {{
-			allowing(mock);
-		}});
-		return mock;
-	}
-
-	public void assertIsSatisfied() {
-		mockery.assertIsSatisfied();
-	}
-
-	public void checking(Expectations expectations) {
-		mockery.checking(expectations);
-	}
-
-
-	public Statement novoStatement() {
-		final Statement stmt = new Statement("select id, name from Statement");
-		stmt.setName("Hql name");
-		session.save(stmt);
-		return stmt;
+	@AfterClass
+	public void shutdown() {
+		if (factory != null) {
+			factory.close();
+		}
 	}
 
 }

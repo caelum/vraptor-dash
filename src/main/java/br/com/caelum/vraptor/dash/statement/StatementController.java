@@ -18,6 +18,9 @@ import br.com.caelum.vraptor.view.Results;
 @Resource
 public class StatementController {
 
+	private static final String SHOW = "statement/show";
+	private static final String INDEX = "statement/index";
+
 	private final Result result;
 	private final Validator validator;
 	private final StatementDao statements;
@@ -39,7 +42,7 @@ public class StatementController {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
-		marker.use("index").with("statements", statements.all()).render();
+		marker.use(INDEX).with("statements", statements.all()).render();
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -49,7 +52,7 @@ public class StatementController {
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
 			validaStatement(statement);
-			marker.use("show").with("statement", statement).with("resultado", statements.execute(statement)).render();
+			marker.use(SHOW).with("statement", statement).with("resultado", statements.execute(statement)).render();
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}

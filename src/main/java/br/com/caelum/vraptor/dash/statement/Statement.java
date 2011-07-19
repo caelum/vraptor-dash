@@ -48,7 +48,8 @@ public class Statement {
 	private Statement() {
 	}
 
-	public Statement(String hql) {
+	public Statement(String name, String hql) {
+		this.name = name;
 		this.hql = hql;
 	}
 
