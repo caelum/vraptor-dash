@@ -17,7 +17,6 @@ public class AbstractTest {
 	public static void setup() {
 		factory = new AnnotationConfiguration().configure().addAnnotatedClass(Statement.class)
 				.buildSessionFactory();
-		
 	}
 
 	@Before

@@ -2,13 +2,14 @@
 <head>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
+	google.load("jquery", "1.6.2");
 	google.load("visualization", "1", {packages:["linechart"]});
     google.setOnLoadCallback(function() {
         $(function() {
 			$('#graph').hide();
 			$('#cumulativeGraph').click(drawChart);
 			$('#graphShow').click(graphDisplay);
-			<#if resultado[0]?size==2>
+			<#if resultado[0]?size==2 || resultado[0]?size==3>
 				$('#cumulativeGraphForm').show();
 			</#if>
 			drawChart();
@@ -20,26 +21,26 @@
         var chartOptions = {width: 800, height: 450, title: 'Statement'};
         var chartDrawArea = document.getElementById('graphCanvas');
 		var data = new google.visualization.DataTable();
-		<#if resultado[0].size == 2>
+		<#if resultado[0]?size == 2>
 			data.addColumn('string', 'Column 1');
 			data.addColumn('number', 'Column 2');
 
 			data.addRows(${resultado.size});
-				var acumulador = 0;
-				<#assign status = -1>
-				<#list resultado as linha>
-					<#assign status = status + 1>
-					data.setCell(${status}, 0, '${linha[0]}');
-					if(acumular == true) {
-						acumulador += ${linha[1]};
-						data.setCell(${status}, 1, acumulador);
-					} else {
-						data.setCell(${status}, 1, ${linha[1]});
-					}
-				</#list>
+			var acumulador = 0;
+			<#assign status = -1>
+			<#list resultado as linha>
+				<#assign status = status + 1>
+				data.setCell(${status}, 0, '${linha[0]}');
+				if(acumular == true) {
+					acumulador += ${linha[1]};
+					data.setCell(${status}, 1, acumulador);
+				} else {
+					data.setCell(${status}, 1, ${linha[1]});
+				}
+			</#list>
 
 		</#if>
-		<#if resultado[0].size == 3>
+		<#if resultado[0]?size == 3>
 			var indiceDaLinha = {};
 			var colunas = {};
 			data.addColumn('string', 'Coluna 1');
