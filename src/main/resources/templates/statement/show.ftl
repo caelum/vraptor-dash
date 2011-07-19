@@ -25,7 +25,7 @@
 			data.addColumn('string', 'Column 1');
 			data.addColumn('number', 'Column 2');
 
-			data.addRows(${resultado.size});
+			data.addRows(${resultado?size});
 			var acumulador = 0;
 			<#assign status = -1>
 			<#list resultado as linha>
@@ -112,7 +112,7 @@
 	<#list resultado as row>
 		<tr>
 		<#list row as value>
-			<td>value</td>
+			<td>${value}</td>
 		</#list>
 		</tr>
 	</#list>
