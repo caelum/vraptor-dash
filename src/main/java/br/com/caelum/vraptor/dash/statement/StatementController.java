@@ -50,7 +50,7 @@ public class StatementController {
 		}
 	}
 
-	@Path("/dash/statements/novo")
+	@Path("/dash/statements")
 	@Post
 	public void create(Statement statement) {
 		if (currentUser.canCreateStatements()) {
