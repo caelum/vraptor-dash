@@ -44,7 +44,7 @@
 					</#if>
 					<tr id="trStatement_${stmt.id}" class="${even}">
 						<td>
-							<a id="tituloStmt_${stmt.id}" href="${stmt.id}">${stmt.name}</a>
+							<a id="tituloStmt_${stmt.id}" href="statements/${stmt.id}">${stmt.name}</a>
 						</td>
 						<td id=""><#if stmt.passwordProtected>password</#if></td>
 						<td id="corpoStmt_${stmt.id}">${stmt.hql}</td>

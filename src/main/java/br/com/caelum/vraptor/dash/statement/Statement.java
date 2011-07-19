@@ -5,13 +5,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.*;
 
 @Entity
 @Table(name="DashStatement")
 public class Statement {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator="statement-uuid")
+	@GenericGenerator(name="statement-uuid",strategy = "uuid")
 	private Long id;
 
 	private String name;
@@ -45,7 +47,7 @@ public class Statement {
 	}
 
 	@Deprecated
-	private Statement() {
+	protected Statement() {
 	}
 
 	public Statement(String name, String hql) {

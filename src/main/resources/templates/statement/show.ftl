@@ -8,7 +8,7 @@
 			$('#graph').hide();
 			$('#cumulativeGraph').click(drawChart);
 			$('#graphShow').click(graphDisplay);
-			<#if resultado[0].size==2 || resultado[0].size==3>
+			<#if resultado[0]?size==2>
 				$('#cumulativeGraphForm').show();
 			</#if>
 			drawChart();
@@ -20,7 +20,7 @@
         var chartOptions = {width: 800, height: 450, title: 'Statement'};
         var chartDrawArea = document.getElementById('graphCanvas');
 		var data = new google.visualization.DataTable();
-		<#if test="${resultado[0].size == 2}">
+		<#if resultado[0].size == 2>
 			data.addColumn('string', 'Column 1');
 			data.addColumn('number', 'Column 2');
 
@@ -39,7 +39,7 @@
 				</#list>
 
 		</#if>
-		<#if test="${resultado[0].size == 3}">
+		<#if resultado[0].size == 3>
 			var indiceDaLinha = {};
 			var colunas = {};
 			data.addColumn('string', 'Coluna 1');
@@ -79,7 +79,7 @@
 					data.setCell(colunas['${linha[1]}'], indiceDaLinha['${linha[0]}'], ${linha[2]});
 				}
 			</#list>
-		<#if>
+		</#if>
 		var columnCount = $('table#resultado tr:first-child td').size();
 		if (columnCount == 2 || columnCount == 3) {
 			var chart = new google.visualization.LineChart(chartDrawArea);
