@@ -25,18 +25,13 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
 			<version>3.2.0.ga</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.transaction</groupId>
-					<artifactId>jta</artifactId>
-				</exclusion>
-			</exclusions>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
 			<version>3.3.1.GA</version>
-			<optional>true</optional>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>br.com.caelum</groupId>
@@ -46,7 +41,7 @@
 		</dependency>
 		<dependency>
 			<groupId>br.com.caelum.vraptor</groupId>
-			<artifactId>vraptor-environment</artifactId>
+			<artifactId>vraptor-freemarker</artifactId>
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
