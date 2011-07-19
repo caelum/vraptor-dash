@@ -35,10 +35,14 @@
 		
 
 		<tbody>
-			<#assign count = 0>
+			<#assign even = "even">
 			<#list statements as stmt>
-				<#assign count = count + 1>
-				<tr id="trStatement_${stmt.id}" class="${ count % 2 == 0 ? 'even' : 'odd'}">
+				<#if even=="even">
+					<#assign even = "odd">
+				<#else>
+					<#assign even = "even">
+				</#if>
+				<tr id="trStatement_${stmt.id}" class="${even}">
 					<td>
 						<a id="tituloStmt_${stmt.id}" href="${stmt.id}">${stmt.titulo}</a>
 					</td>
