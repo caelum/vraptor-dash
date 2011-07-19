@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import org.hibernate.annotations.*;
 
-@Entity
+@Entity(name = "DashStatement")
 @Table(name="DashStatement")
 public class Statement {
 

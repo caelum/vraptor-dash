@@ -48,13 +48,13 @@ public class StatementDao {
 		session.merge(statement);
 	}
 
-	public Statement load(String idStatement) {
-		return (Statement) session.load( Statement.class, idStatement);
+	public Statement load(String id) {
+		return (Statement) session.load(Statement.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Statement> all() {
-		return session.createQuery("from Statement").setCacheable(true).list();
+		return session.createQuery("from DashStatement").setCacheable(true).list();
 	}
 
 }

@@ -27,6 +27,7 @@ public abstract class AbstractTest {
 	@After
 	public void shutdownSession() {
 		if (this.session != null) {
+			session.createQuery("delete from DashStatement").executeUpdate();
 			this.session.close();
 		}
 	}
