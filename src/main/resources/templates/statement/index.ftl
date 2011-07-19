@@ -9,7 +9,7 @@
 				<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>
 				<label class="strong">Password</label>: &nbsp;
 				<input id="passwordStmt" type="password" name="statement.password" value=""/><br/><br/>
-				<textarea id="hqlToExecute" rows="10" cols="10" name="statement.hql"></textarea>
+				<textarea id="hqlToExecute" style="width: 600px; height: 200px" name="statement.hql"></textarea>
 			</div>
 	
 			<div style="padding-top:3px; clear:left">
