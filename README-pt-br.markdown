@@ -1,39 +1,24 @@
-## vraptor-freemarker
+## vraptor-dash
 
-Uma biblioteca simples para renderizar templates freemarker de dentro de arquivos jar, email, etc.
+Um dashboard com diversas ferramentas para seu projeto vraptor.
 
 # instalação
 
-É possível fazer o download do Vraptor-freemarker.jar do repositório do Maven, ou configurado em qualquer ferramenta compatível:
+É possível fazer o download do jar do repositório do Maven, ou configurado em qualquer ferramenta compatível:
 
 		<dependency>
 			<groupId>br.com.caelum.vraptor</groupId>
-			<artifactId>vraptor-freemarker</artifactId>
+			<artifactId>vraptor-dash</artifactId>
 			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 
 
-# Renderizando páginas
+# Configuração
 
-@Resource
-public class DashboardController {
+Para configurar, coloque em seu hibernate.cfg.xml a entidade:
 
-	private final Usuario usuario;
-	private final Freemarker freemarker;
-
-	public DashboardController(Usuario usuario, Freemarker freemarker) {
-		this.usuario = usuario;
-		this.freemarker = freemarker;
-	}
-	
-	@Path("/admin/dashboard")
-	@Get
-	public void lista() throws IOException, TemplateException {
-		freemarker.use("dashboard").with("usuarioLogado", usuario).render();
-	}
-	
-}
+	br.com.caelum.vraptor.dash.statement.Statement
 
 # Renderizando emails
 
