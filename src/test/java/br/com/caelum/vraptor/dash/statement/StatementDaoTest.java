@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.dash.statement;
 
 import java.util.List;
 
+import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,9 +20,11 @@ public class StatementDaoTest extends AbstractTest{
 
 	@Test
 	public void verificaRetornoDeQueries() {
+		Transaction tx = session.beginTransaction();
 		session.save(new Statement("first", "from First"));
 		session.save(new Statement("second", "from Second"));
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name, hql from Statement"));
+		tx.commit();
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"));
 
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals(2, result.get(0).length);

@@ -54,7 +54,7 @@ public class StatementDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Statement> all() {
-		return session.createQuery("from Statement").setCacheable(true).list();
+		return session.createQuery("from DashStatement").setCacheable(true).list();
 	}
 
 }
