@@ -24,17 +24,20 @@ public class Stat {
 	private final String userId;
 	
 	private Calendar createdAt;
+	
+	private String verb;
 
 	private final long time;
 	
 	Stat() {
-		this("", "", 0);
+		this("", "", 0, "");
 	}
 	
-	public Stat(String userId, String uri, long time) {
+	public Stat(String userId, String uri, long time, String verb) {
 		this.userId = userId;
 		this.uri = uri;
 		this.time = time;
+		this.verb = verb;
 		this.createdAt = Calendar.getInstance();
 	}
 
