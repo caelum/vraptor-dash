@@ -19,15 +19,20 @@ Um dashboard com diversas ferramentas para seu projeto vraptor.
 Para configurar, coloque em seu hibernate.cfg.xml a entidade:
 
 	br.com.caelum.vraptor.dash.statement.Statement
+	br.com.caelum.vraptor.dash.uristats.Stat
 	
 Crie também um componente que implemente a interface StatementAwareUser:
 
 	@Component
-	public class StatementCheck implements StatementAwareUser {
+	public class StatementCheck implements StatementAwareUser, IdeableUser {
 	
 		private final User user;
 		public StatementCheck(User user) {
 			this.user = user;
+		}
+
+		public Serializable getId() {
+			return user==null ? "$not_logged_in$" : user.getId();
 		}
 	
 		public boolean canCreateStatements() {
