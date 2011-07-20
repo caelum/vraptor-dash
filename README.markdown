@@ -43,6 +43,10 @@ Create a component that implements StatementAwareUser:
 # Accessing
 
 Go to /dash/statements
+Do queries as:
+
+	select count(id), uri from DashUriStat group by uri
+	select count(id), userId from DashUriStat group by userId
 
 # Help
 

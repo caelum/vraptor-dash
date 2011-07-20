@@ -43,6 +43,10 @@ Crie também um componente que implemente a interface StatementAwareUser:
 # Acessando
 
 Acesse a URI /dash/statements
+Faça queries como:
+
+	select count(id), uri from DashUriStat group by uri
+	select count(id), userId from DashUriStat group by userId
 
 # Ajuda
 
