@@ -9,17 +9,24 @@ import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.interceptor.ExecuteMethodInterceptor;
 import br.com.caelum.vraptor.interceptor.Interceptor;
+import br.com.caelum.vraptor.ioc.Container;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
-@Intercepts(before=ExecuteMethodInterceptor.class)
+/**
+ * Saves all request information as statistics
+ * 
+ * @author guilherme silveira
+ */
+@Intercepts(before = ExecuteMethodInterceptor.class)
 public class URIStatInterceptor implements Interceptor {
-	
-	private final IdeableUser user;
+
 	private final Session session;
 	private final HttpServletRequest request;
+	private final Container container;
 
-	public URIStatInterceptor(IdeableUser user, Session session, HttpServletRequest request) {
-		this.user = user;
+	public URIStatInterceptor(Container container, Session session,
+			HttpServletRequest request) {
+		this.container = container;
 		this.session = session;
 		this.request = request;
 	}
@@ -30,7 +37,14 @@ public class URIStatInterceptor implements Interceptor {
 
 	public void intercept(InterceptorStack arg0, ResourceMethod method,
 			Object arg2) throws InterceptionException {
-		session.save(new Stat(user.getId().toString(), request.getRequestURI()));
+		String key = "";
+		try {
+			IdeableUser user = container.instanceFor(IdeableUser.class);
+			key = user.getId().toString();
+		} catch (Exception e) {
+			key = "";
+		}
+		session.save(new Stat(key, request.getRequestURI()));
 	}
 
 }

@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * An stat that represents a specific request to a specific uri from an user at some time.
+ * @author guilherme silveira
+ */
 @Table(name="DashUriStat")
 @Entity(name="DashUriStat")
 public class Stat {

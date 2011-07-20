@@ -7,6 +7,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * A saved statement in the database, to be executed as HQL.
+ * @author guilherme silveira
+ */
 @Entity(name = "DashStatement")
 @Table(name="DashStatement")
 public class Statement {
