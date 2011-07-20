@@ -32,7 +32,7 @@ Crie também um componente que implemente a interface StatementAwareUser:
 		}
 
 		public Serializable getId() {
-			return user==null ? "$not_logged_in$" : user.getId();
+			return user.getId();
 		}
 	
 		public boolean canCreateStatements() {
