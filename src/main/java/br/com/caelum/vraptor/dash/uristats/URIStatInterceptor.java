@@ -39,6 +39,8 @@ public class URIStatInterceptor implements Interceptor {
 			Object instance) throws InterceptionException {
 		long before = System.currentTimeMillis();
 		stack.next(method, instance);
+		long time = System.currentTimeMillis() - before;
+
 		String key = "";
 		try {
 			IdeableUser user = container.instanceFor(IdeableUser.class);
@@ -47,7 +49,7 @@ public class URIStatInterceptor implements Interceptor {
 			key = "";
 		}
 		Stat stat = new Stat(key, request.getRequestURI(),
-				System.currentTimeMillis() - before, request.getMethod());
+				time, request.getMethod());
 		session.save(stat);
 	}
 
