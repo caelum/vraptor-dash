@@ -29,7 +29,7 @@ public class Stat {
 	
 	private String resource;
 	
-	private String action;
+	private String method;
 
 	private final long time;
 	
