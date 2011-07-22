@@ -48,15 +48,12 @@ public class URIStatInterceptor implements Interceptor {
 		} catch (Exception e) {
 			key = "";
 		}
-		
-		String uri = request.getRequestURI();
-		int secondBarPosition = uri.indexOf("/", 1);
-		int thirdBarPosition = uri.indexOf("/", secondBarPosition+1);
-		String resource = uri.substring(1, secondBarPosition);
-		String action = uri.substring(secondBarPosition+1, thirdBarPosition);
+
+		String resource = method.getResource().getType().getName();
+		String actionName = method.getMethod().getName();
 		
 		Stat stat = new Stat(key, request.getRequestURI(),
-				time, request.getMethod(), resource, action);
+				time, request.getMethod(), resource, actionName);
 		session.save(stat);
 	}
 
