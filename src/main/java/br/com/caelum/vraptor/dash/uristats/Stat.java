@@ -26,14 +26,18 @@ public class Stat {
 	private Calendar createdAt;
 	
 	private String verb;
+	
+	private String resource;
+	
+	private String action;
 
 	private final long time;
 	
 	Stat() {
-		this("", "", 0, "");
+		this("", "", 0, "", "", "");
 	}
 	
-	public Stat(String userId, String uri, long time, String verb) {
+	public Stat(String userId, String uri, long time, String verb, String resource, String action) {
 		this.userId = userId;
 		this.uri = uri;
 		this.time = time;
