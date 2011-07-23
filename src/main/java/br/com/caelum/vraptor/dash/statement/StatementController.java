@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.dash.statement;
 
 import java.io.IOException;
+import java.util.List;
 
 import freemarker.template.TemplateException;
 import br.com.caelum.vraptor.Get;
@@ -19,6 +20,7 @@ import br.com.caelum.vraptor.view.Results;
 public class StatementController {
 
 	private static final String SHOW = "statement/show";
+	private static final String NONE = "statement/none";
 	private static final String INDEX = "statement/index";
 
 	private final Result result;
@@ -52,7 +54,12 @@ public class StatementController {
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
 			validaStatement(statement);
-			marker.use(SHOW).with("statement", statement).with("resultado", statements.execute(statement)).render();
+			List<Object[]> results = statements.execute(statement);
+			if(results.isEmpty()) {
+				marker.use(NONE).render();
+			} else {
+				marker.use(SHOW).with("statement", statement).with("resultado", results).render();
+			}
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}
