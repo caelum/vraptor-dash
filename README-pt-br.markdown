@@ -63,6 +63,32 @@ E então anote seu método para auditoria:
 
 Lembre-se que sua classe de usuário precisa implementar IdeableUser.
 
+# Otimizando estratégias de cache
+
+Adicione o seguinte filtro ao seu web.xml e configure os DashUriStats:
+
+	<filter>
+		<filter-name>vraptor-dash-cache</filter-name>
+		<filter-class>br.com.caelum.vraptor.dash.cache.CacheCheckFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>vraptor-dash-cache</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+Agora o objeto Stat possui os campos *size*, *etag*. Caso hasEtag seja false, a etag é gerada mas não
+devolvida ao cliente, permitindo que você verifique qual seria a otimização em kbytes e em segundos
+ possível:
+
+	select uri, verb, etag, size*(count(uri)-1)/1024, time*(count(uri)-1)/1000 from DashUriStat where hasEtag=false and (cache is null or cache=="") group by uri, verb, etag
+
+Ou por método, que mostra quão importante é melhorar o método em si, uma medida mais importante:
+
+	select resource, method, verb, etag, size*(count(method)-1)/1024 as savedKbytes, time*(count(method)-1)/1000 as savedMillis from DashUriStat where hasEtag=false and (cache is null or cache=="") group by resource, method, verb, etag order by savedKbytes, savedMillis
+	
+Analise qual otimização de cache de método você pode ganhar mais e otimize.
+
 # Ajuda
 
 Receba assistência dos desenvolvedores do vraptor e da comunidade na lista de emails do vraptor.
