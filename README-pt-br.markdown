@@ -48,6 +48,21 @@ Faça queries como:
 	select count(id), uri from DashUriStat group by uri
 	select count(id), userId from DashUriStat group by userId
 
+# Auditando acesso a determinados métodos
+
+Se você deseja logar quem acessa determinados métodos, registre o
+
+	AuditLogInterceptor
+	
+E então anote seu método para auditoria:
+
+	@Audit("client")
+	public void edit(Client client) {
+		...
+	}
+
+Lembre-se que sua classe de usuário precisa implementar IdeableUser.
+
 # Ajuda
 
 Receba assistência dos desenvolvedores do vraptor e da comunidade na lista de emails do vraptor.

@@ -48,6 +48,21 @@ Do queries as:
 	select count(id), uri from DashUriStat group by uri
 	select count(id), userId from DashUriStat group by userId
 
+# Auditing access to specific methods
+
+If you want to log who access some methods, register:
+
+	AuditLogInterceptor
+
+And annotate your method with the parameters to be logged:
+
+	@Audit("client")
+	public void edit(Client client) {
+		...
+	}
+	
+Remember that you need the logged in user to implement the interface IdeableUser
+
 # Help
 
 Get help at VRaptor's mailing list
