@@ -8,11 +8,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.http.route.Route;
 import br.com.caelum.vraptor.http.route.Router;
 import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 
-public class VRaptorMonitor {
+@Resource
+public class VRaptorController {
 	
 	private final class CompareByRouteToString implements Comparator<Route> {
 		public int compare(Route r1, Route r2) {
@@ -22,12 +24,12 @@ public class VRaptorMonitor {
 
 	private final Router router;
 
-	public VRaptorMonitor(Router router) {
+	public VRaptorController(Router router) {
 		this.router = router;
 	}
 
 	@Path("/dash/routes")
-	public InputStreamDownload listaRotas() throws IOException {
+	public InputStreamDownload allRoutes() throws IOException {
 		List<Route> lista = new ArrayList<Route>(router.allRoutes());
 		Collections.sort(lista, new CompareByRouteToString());
 		StringBuilder sb = new StringBuilder();

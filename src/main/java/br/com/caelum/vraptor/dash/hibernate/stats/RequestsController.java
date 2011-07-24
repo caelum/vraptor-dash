@@ -15,7 +15,7 @@ public class RequestsController {
 		this.requests = requests;
 	}
 	
-	@Path("/auditoria/requests")
+	@Path("/dash/requests")
 	public void visualiza() {
 		result.include("requests", requests.toMap());
 	}

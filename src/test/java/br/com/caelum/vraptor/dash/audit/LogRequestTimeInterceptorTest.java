@@ -12,7 +12,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 
 import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.dash.hibernate.stats.LogRequestTimeInterceptor;
+import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequestInterceptor;
 import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequest;
 import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequests;
 import br.com.caelum.vraptor.resource.DefaultResourceClass;
@@ -36,7 +36,7 @@ public class LogRequestTimeInterceptorTest {
 		OpenRequests requests = mock(OpenRequests.class);
 		final OpenRequest requestAberta = new OpenRequest(method, resourceClass.getType());
 
-		LogRequestTimeInterceptor interceptor = new LogRequestTimeInterceptor(requests);
+		OpenRequestInterceptor interceptor = new OpenRequestInterceptor(requests);
 		interceptor.intercept(stack, resourceMethod, null);
 
 		// Verifica que o elemento adicionado no RequestsAbertas tem o "recurso"

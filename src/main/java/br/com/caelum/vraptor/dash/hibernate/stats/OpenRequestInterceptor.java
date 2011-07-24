@@ -7,11 +7,11 @@ import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
 @Component
-public class LogRequestTimeInterceptor implements Interceptor {
+public class OpenRequestInterceptor implements Interceptor {
 
 	private final OpenRequests requests;
 	
-	public LogRequestTimeInterceptor(OpenRequests requests) {
+	public OpenRequestInterceptor(OpenRequests requests) {
 		this.requests = requests;
 	}
 	
