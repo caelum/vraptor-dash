@@ -1,19 +1,11 @@
 package br.com.caelum.vraptor.dash.hibernate;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import net.sf.ehcache.CacheManager;
 import net.vidageek.mirror.dsl.Mirror;
@@ -22,37 +14,26 @@ import org.hibernate.Session;
 import org.hibernate.stat.EntityStatistics;
 import org.hibernate.stat.QueryStatistics;
 import org.hibernate.stat.Statistics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import br.com.caelum.caelumweb2.vraptor.Open;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.dash.audit.Audit;
 import br.com.caelum.vraptor.dash.hibernate.stats.CacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.CollectionStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityCacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
-import br.com.caelum.vraptor.http.route.Route;
-import br.com.caelum.vraptor.http.route.Router;
-import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 
-import com.mchange.v2.c3p0.jboss.C3P0PooledDataSource;
+import com.mchange.v2.c3p0.mbean.C3P0PooledDataSource;
 
 @Resource
-@Open
 public class AuditoriaController {
 
-	private static Logger log = LoggerFactory.getLogger(AuditoriaController.class);
-	private final Router router;
 	private final Session session;
 	private final Result result;
 
-	public AuditoriaController(Router router, Session session, Result result) {
+	public AuditoriaController(Session session, Result result) {
 		this.session = session;
-		this.router = router;
 		this.result = result;
 	}
 
@@ -62,9 +43,6 @@ public class AuditoriaController {
 
 		result.forwardTo("");
 	}
-
-
-
 	
 	@Path("/auditoria/painelDeControle")
 	public void painelDeControle() {

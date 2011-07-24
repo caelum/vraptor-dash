@@ -1,4 +1,4 @@
-package br.com.caelum.caelumweb2.vraptor.interceptor;
+package br.com.caelum.vraptor.dash.audit;
 
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;

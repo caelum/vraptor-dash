@@ -1,7 +1,5 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
-import java.lang.reflect.Method;
-
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.interceptor.Interceptor;
@@ -24,10 +22,7 @@ public class LogRequestTimeInterceptor implements Interceptor {
 
 	@Override
 	public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) throws InterceptionException {
-		Method metodo = method.getMethod();
-		Class<?> classe = method.getResource().getType();
-		OpenRequest requestAberta = new OpenRequest(metodo, classe);
-		requests.add(requestAberta);
+		OpenRequest requestAberta = requests.add(method);
 		try {
 			stack.next(method, instance);
 		} finally {

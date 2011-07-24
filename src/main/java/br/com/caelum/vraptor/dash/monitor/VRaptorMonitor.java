@@ -9,18 +9,27 @@ import java.util.List;
 
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.http.route.Route;
+import br.com.caelum.vraptor.http.route.Router;
 import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 
 public class VRaptorMonitor {
+	
+	private final class CompareByRouteToString implements Comparator<Route> {
+		public int compare(Route r1, Route r2) {
+			return r1.toString().compareTo(r2.toString());
+		}
+	}
 
-	@Path("/auditoria/rotas")
+	private final Router router;
+
+	public VRaptorMonitor(Router router) {
+		this.router = router;
+	}
+
+	@Path("/dash/routes")
 	public InputStreamDownload listaRotas() throws IOException {
 		List<Route> lista = new ArrayList<Route>(router.allRoutes());
-		Collections.sort(lista, new Comparator<Route>() {
-			public int compare(Route r1, Route r2) {
-				return r1.toString().compareTo(r2.toString());
-			}
-		});
+		Collections.sort(lista, new CompareByRouteToString());
 		StringBuilder sb = new StringBuilder();
 		for (Route route : lista) {
 			sb.append(route.toString() + "\n");
