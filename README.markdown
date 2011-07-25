@@ -84,7 +84,7 @@ If hasEtag = false, the etag is automatically generated (but not returned to the
 
 Per method, which shows how important it is to improve one method:
 
-	select resource, method, verb, etag, size*(count(method)-1)/1024 as savedKbytes, time*(count(method)-1)/1000 as savedMillis from DashUriStat where hasEtag=false and (cache is null or cache=="") group by resource, method, verb, etag order by savedKbytes, savedMillis
+	select resource, method, (sum(size)-   (select sum(avg(d.size)) from DashUriStat as d where d.resource=resource and d.method=method group by etag, sum(avg(d.size)))      )/1024 as ssss,(sum(time)-avg(time))/1000 as tttt from DashUriStat where cache = '' and hadEtag = 'false' and verb='GET' group by resource, method order by resource, method
 	
 Analyze where you can gain the most and optimize it.
 

@@ -85,8 +85,8 @@ devolvida ao cliente, permitindo que você verifique qual seria a otimização e
 
 Ou por método, que mostra quão importante é melhorar o método em si, uma medida mais importante:
 
-	select resource, method, verb, etag, size*(count(method)-1)/1024 as savedKbytes, time*(count(method)-1)/1000 as savedMillis from DashUriStat where hasEtag=false and (cache is null or cache=="") group by resource, method, verb, etag order by savedKbytes, savedMillis
-	
+select resource, method, (sum(size)-   (select sum(avg(d.size)) from DashUriStat as d where d.resource=resource and d.method=method group by etag, sum(avg(d.size)))      )/1024 as ssss,(sum(time)-avg(time))/1000 as tttt from DashUriStat where cache = '' and hadEtag = 'false' and verb='GET' group by resource, method order by resource, method
+
 Analise qual otimização de cache de método você pode ganhar mais e otimize.
 
 # Ajuda
