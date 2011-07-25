@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.dash.uristats;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +10,7 @@ import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.dash.cache.ObservableResponse;
+import br.com.caelum.vraptor.http.VRaptorResponse;
 import br.com.caelum.vraptor.interceptor.ExecuteMethodInterceptor;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.ioc.Container;
@@ -55,18 +57,22 @@ public class URIStatInterceptor implements Interceptor {
 		String hadEtag = "unknown";
 		int size = 0;
 		int status = 0;
-		if (response instanceof ObservableResponse) {
-			ObservableResponse resp = (ObservableResponse) response;
-			etag = resp.getEtagHeader();
-			if(etag.equals("")) {
-				etag = resp.getMd5();
-				hadEtag = "false";
-			} else {
-				hadEtag = "true";
+		if (response instanceof VRaptorResponse) {
+			VRaptorResponse r = (VRaptorResponse) response;
+			ServletResponse sr = r.getResponse();
+			if(sr instanceof ObservableResponse) {
+				ObservableResponse resp = (ObservableResponse) sr;
+				etag = resp.getEtagHeader();
+				if(etag.equals("")) {
+					etag = resp.getMd5();
+					hadEtag = "false";
+				} else {
+					hadEtag = "true";
+				}
+				size = resp.getBufferSize();
+				cacheControl = resp.getCacheControlHeader();
+				status = resp.getGivenStatus();
 			}
-			size = resp.getBufferSize();
-			cacheControl = resp.getCacheControlHeader();
-			status = resp.getGivenStatus();
 		}
 		
 		Stat stat = new Stat(key, request.getRequestURI(), time,
