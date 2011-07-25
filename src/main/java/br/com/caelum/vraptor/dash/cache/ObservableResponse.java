@@ -24,11 +24,13 @@ public class ObservableResponse extends HttpServletResponseWrapper {
 
 	private PrintWriter writer;
 	private ResponseServletOutputStream oStream;
-	private boolean isCaching = false;
+	private String cacheControl = "";
+	private String etag = "";
 
 	public ServletOutputStream getOutputStream() throws IOException {
 		if (this.oStream == null) {
-			this.oStream = new ResponseServletOutputStream(super.getOutputStream());
+			this.oStream = new ResponseServletOutputStream(
+					super.getOutputStream());
 		}
 		return this.oStream;
 	}
@@ -125,4 +127,33 @@ public class ObservableResponse extends HttpServletResponseWrapper {
 	public long size() {
 		return size;
 	}
+
+	@Override
+	public void addHeader(String name, String value) {
+		if (name.toLowerCase().equals("cache-control")) {
+			this.cacheControl += ";" + value;
+		} else if (name.toLowerCase().equals("etag")) {
+			this.etag += ";" + value;
+		}
+		super.addHeader(name, value);
+	}
+
+	@Override
+	public void setHeader(String name, String value) {
+		if (name.toLowerCase().equals("cache-control")) {
+			this.cacheControl = value;
+		} else if (name.toLowerCase().equals("etag")) {
+			this.etag = value;
+		}
+		super.setHeader(name, value);
+	}
+
+	public String getEtagHeader() {
+		return etag;
+	}
+
+	public String getCacheControlHeader() {
+		return cacheControl;
+	}
+
 }

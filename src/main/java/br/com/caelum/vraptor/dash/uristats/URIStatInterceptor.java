@@ -50,22 +50,30 @@ public class URIStatInterceptor implements Interceptor {
 		String resource = method.getResource().getType().getName();
 		String methodName = method.getMethod().getName();
 
-		String etag = response.getHeader("etag");
-		boolean hadEtag = etag != null;
+		String etag = "";
+		String cacheControl = "";
+		String hadEtag = "unknown";
 		int size = 0;
-		if (response instanceof ObservableResponse && !hadEtag) {
+		if (response instanceof ObservableResponse) {
 			ObservableResponse resp = (ObservableResponse) response;
-			etag = resp.getMd5();
+			etag = resp.getEtagHeader();
+			if(etag.equals("")) {
+				etag = resp.getMd5();
+				hadEtag = "false";
+			} else {
+				hadEtag = "true";
+			}
 			size = resp.getBufferSize();
+			cacheControl = resp.getCacheControlHeader();
 		}
-
+		
 		Stat stat = new Stat(key, request.getRequestURI(), time,
 				request.getMethod(), resource, methodName,
-				response.getHeader("etag"), response.getStatus(), hadEtag,
-				response.getHeader("cache-control"), size);
+				etag, response.getStatus(), hadEtag,
+				cacheControl, size);
 		session.save(stat);
 	}
-
+	
 	public static String userKey(Container container) {
 		String key = "";
 		try {

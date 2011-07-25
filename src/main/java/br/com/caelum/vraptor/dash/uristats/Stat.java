@@ -37,17 +37,17 @@ public class Stat {
 	
 	private final int resultCode;
 
-	private final boolean hadEtag;
+	private final String hadEtag;
 
 	private final String cache;
 
 	private final int size;
 	
 	Stat() {
-		this("", "", 0, "", "", "", "",0 , false, "", 0);
+		this("", "", 0, "", "", "", "",0 , "unknown", "", 0);
 	}
 	
-	public Stat(String userId, String uri, long time, String verb, String resource, String action, String etag, int resultCode, boolean hadEtag, String cache, int size) {
+	public Stat(String userId, String uri, long time, String verb, String resource, String action, String etag, int resultCode, String hadEtag, String cache, int size) {
 		this.userId = userId;
 		this.uri = uri;
 		this.time = time;
