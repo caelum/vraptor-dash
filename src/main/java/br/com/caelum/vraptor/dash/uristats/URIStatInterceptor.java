@@ -54,6 +54,7 @@ public class URIStatInterceptor implements Interceptor {
 		String cacheControl = "";
 		String hadEtag = "unknown";
 		int size = 0;
+		int status = 0;
 		if (response instanceof ObservableResponse) {
 			ObservableResponse resp = (ObservableResponse) response;
 			etag = resp.getEtagHeader();
@@ -65,11 +66,12 @@ public class URIStatInterceptor implements Interceptor {
 			}
 			size = resp.getBufferSize();
 			cacheControl = resp.getCacheControlHeader();
+			status = resp.getGivenStatus();
 		}
 		
 		Stat stat = new Stat(key, request.getRequestURI(), time,
 				request.getMethod(), resource, methodName,
-				etag, response.getStatus(), hadEtag,
+				etag, status, hadEtag,
 				cacheControl, size);
 		session.save(stat);
 	}

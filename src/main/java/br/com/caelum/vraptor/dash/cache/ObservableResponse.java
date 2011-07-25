@@ -22,6 +22,7 @@ public class ObservableResponse extends HttpServletResponseWrapper {
 		}
 	}
 
+	private int status = 0;
 	private PrintWriter writer;
 	private ResponseServletOutputStream oStream;
 	private String cacheControl = "";
@@ -155,5 +156,41 @@ public class ObservableResponse extends HttpServletResponseWrapper {
 	public String getCacheControlHeader() {
 		return cacheControl;
 	}
+
+	public int getGivenStatus() {
+		return status;
+	}
+
+	@Override
+	public void sendError(int sc, String msg) throws IOException {
+		this.status = sc;
+		super.sendError(sc, msg);
+	}
+
+	@Override
+	public void sendError(int sc) throws IOException {
+		this.status = sc;
+		super.sendError(sc);
+	}
+
+	@Override
+	public void sendRedirect(String location) throws IOException {
+		this.status = 302;
+		super.sendRedirect(location);
+	}
+
+	@Override
+	public void setStatus(int sc, String sm) {
+		this.status = sc;
+		super.setStatus(sc, sm);
+	}
+
+	@Override
+	public void setStatus(int sc) {
+		this.status = sc;
+		super.setStatus(sc);
+	}
+	
+	
 
 }
