@@ -41,13 +41,13 @@ public class Stat {
 
 	private final String cache;
 
-	private final int size;
+	private final long size;
 	
 	Stat() {
 		this("", "", 0, "", "", "", "",0 , "unknown", "", 0);
 	}
 	
-	public Stat(String userId, String uri, long time, String verb, String resource, String action, String etag, int resultCode, String hadEtag, String cache, int size) {
+	public Stat(String userId, String uri, long time, String verb, String resource, String action, String etag, int resultCode, String hadEtag, String cache, long size2) {
 		this.userId = userId;
 		this.uri = uri;
 		this.time = time;
@@ -55,7 +55,7 @@ public class Stat {
 		this.resultCode = resultCode;
 		this.hadEtag = hadEtag;
 		this.cache = cache;
-		this.size = size;
+		this.size = size2;
 		this.createdAt = Calendar.getInstance();
 		this.resource = resource;
 		this.method = action;

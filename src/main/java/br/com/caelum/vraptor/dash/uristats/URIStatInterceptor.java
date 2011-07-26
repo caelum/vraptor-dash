@@ -55,8 +55,8 @@ public class URIStatInterceptor implements Interceptor {
 		String etag = "";
 		String cacheControl = "";
 		String hadEtag = "unknown";
-		int size = 0;
-		int status = 0;
+		long size = 0;
+		int status = 200;
 		if (response instanceof VRaptorResponse) {
 			VRaptorResponse r = (VRaptorResponse) response;
 			ServletResponse sr = r.getResponse();
@@ -69,7 +69,7 @@ public class URIStatInterceptor implements Interceptor {
 				} else {
 					hadEtag = "true";
 				}
-				size = resp.getBufferSize();
+				size = resp.size();
 				cacheControl = resp.getCacheControlHeader();
 				status = resp.getGivenStatus();
 			}
