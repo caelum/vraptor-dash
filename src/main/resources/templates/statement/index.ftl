@@ -74,7 +74,10 @@
 					url:'statements/'+ stmtId,
 					type:'DELETE',
 					success: function() {
-						$("#trStatement_"+ stmtId).remove();
+						link = $("#trStatement_"+ stmtId);
+						$(link).fadeOut(700, function() {
+							link.remove();
+						});
 					}
 				});
 				return false;
