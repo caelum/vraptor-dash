@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
@@ -79,7 +80,22 @@ public class URIStatInterceptor implements Interceptor {
 				request.getMethod(), resource, methodName,
 				etag, status, hadEtag,
 				cacheControl, size);
-		session.save(stat);
+		Transaction tx = session.getTransaction();
+		boolean created = false;
+		if(tx==null || !tx.isActive()) {
+			tx = session.beginTransaction();
+			created = true;
+		}
+		try {
+			session.save(stat);
+			if(created) {
+				tx.commit();
+			}
+		} finally {
+			if(created && tx.isActive()) {
+				tx.rollback();
+			}
+		}
 	}
 	
 	public static String userKey(Container container) {
