@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import freemarker.template.TemplateException;
+import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
@@ -92,6 +93,13 @@ public class StatementController {
 		validaStatement(loaded);
 		statements.merge(loaded);
 		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
+	}
+	
+	@Path("/dash/statements/{statement.id}")
+	@Delete
+	public void delete(Statement statement) {
+		statements.delete(statement);
+		result.nothing();
 	}
 
 	private void validaStatement(Statement statement) throws IOException, TemplateException {

@@ -1,5 +1,7 @@
 <html>
-
+<head>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+</head>
 <body>
 	<h2 class="pagetitle">Statement</h2>
 	<div style="float:left" class="formulario">
@@ -55,14 +57,29 @@
 						</td>
 						<td id="corpoStmt_${stmt.id}">${stmt.hql}</td>
 						<td>
-							<a href="" onclick="alert('todo: support to remove, just link and do a method DELETE on it');" id="remove_${stmt.id}">remove</a>
+							<a style="cursor:pointer" class="remove_stmt" id="remove_${stmt.id}" data-stmtid="${stmt.id}">remove</a>
 						</td>
-	
 					</tr>
 				</#list>
 			</tbody>
 		</table>
 	</fieldset>
 	<br/>
+	
+	<script type="text/javascript">
+		$(function() {
+			$(".remove_stmt").click(function() {
+				var stmtId = $(this).data('stmtid');
+				$.ajax({
+					url:'statements/'+ stmtId,
+					type:'DELETE',
+					success: function() {
+						$("#trStatement_"+ stmtId).remove();
+					}
+				});
+				return false;
+			});
+		});
+	</script>
 </body>
 </html>
