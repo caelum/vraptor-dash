@@ -51,6 +51,10 @@ public class StatementDao {
 	public Statement load(String id) {
 		return (Statement) session.load(Statement.class, id);
 	}
+	
+	public void delete(Statement statement) {
+		session.delete(statement);
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Statement> all() {
