@@ -56,10 +56,15 @@ public class StatementController {
 		if (canView) {
 			validaStatement(statement);
 			List<Object[]> results = statements.execute(statement);
+			List<String> columns = statement.getColumns();
 			if(results.isEmpty()) {
 				marker.use(NONE).render();
 			} else {
-				marker.use(SHOW).with("statement", statement).with("resultado", results).render();
+				marker.use(SHOW)
+					.with("statement", statement)
+					.with("resultado", results)
+					.with("columns", columns)
+					.render();
 			}
 		} else {
 			result.use(HttpResult.class).sendError(401);

@@ -1,5 +1,9 @@
 package br.com.caelum.vraptor.dash.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -85,6 +89,29 @@ public class Statement {
 	
 	public boolean isOpenForOthersWithPassword() {
 		return password!=null && !password.isEmpty();
+	}
+	
+	public List<String> getColumns() {
+		String onlyFields = stripSelectAndFrom();
+		List<String> columns = new ArrayList<String>();
+		StringTokenizer tokens = new StringTokenizer(onlyFields, ",");
+		while(tokens.hasMoreTokens()) {
+			columns.add(tokens.nextToken());
+		}
+		return columns;
+	}
+	
+	private String stripSelectAndFrom() {
+		String hql = this.getHql().toLowerCase();
+		int selectPos = hql.indexOf("select") > 0 ? hql.indexOf("select") : 0;
+		int fromPos = hql.indexOf("from");
+		String onlyFields = null;
+		if (fromPos > 0) {
+			onlyFields = this.getHql().substring(selectPos+6, fromPos);
+		} else {
+			onlyFields = this.getHql();
+		}
+		return onlyFields;
 	}
 
 }
