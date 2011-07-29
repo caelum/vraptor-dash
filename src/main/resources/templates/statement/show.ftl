@@ -109,6 +109,11 @@
 		</form>
 	</div>
 	<table id="resultado">
+	<tr>
+	<#list columns as column>
+		<td><strong>${column}</strong></td>
+	</#list>
+	</tr>
 	<#list resultado as row>
 		<tr>
 		<#list row as value>
