@@ -44,7 +44,7 @@ public class SystemController {
 		return new InputStreamDownload(new ByteArrayInputStream(sb.toString().getBytes()), "text/plain", "log.log");
 	}
 
-	@Path("/auditoria/log/{name}")
+	@Path("/dash/log/{name}")
 	@Audit
 	public InputStreamDownload log(String name) throws IOException {
 		File file = new File(name);
@@ -55,7 +55,7 @@ public class SystemController {
 		return new InputStreamDownload(new FileInputStream(file), "text/plain", "log.log");
 	}
 
-	@Path("/auditoria/threads")
+	@Path("/dash/threads")
 	public void threads() throws IOException, TemplateException {
 		marker.use("/WEB-INF/jsp/auditoria/basic_monitor.jsp").render();
 	}

@@ -4,15 +4,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import br.com.caelum.vraptor.InterceptionException;
-import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.dash.cache.ObservableResponse;
 import br.com.caelum.vraptor.http.VRaptorResponse;
-import br.com.caelum.vraptor.interceptor.ExecuteMethodInterceptor;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.ioc.Container;
 import br.com.caelum.vraptor.resource.ResourceMethod;
@@ -22,18 +17,15 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
  * 
  * @author guilherme silveira
  */
-@Intercepts(before = ExecuteMethodInterceptor.class)
-public class URIStatInterceptor implements Interceptor {
-
-	private final Session session;
+public class BaseURIStatInterceptor implements Interceptor {
+	
 	private final HttpServletRequest request;
 	private final Container container;
 	private final HttpServletResponse response;
 
-	public URIStatInterceptor(Container container, Session session,
+	public BaseURIStatInterceptor(Container container, 
 			HttpServletRequest request, HttpServletResponse response) {
 		this.container = container;
-		this.session = session;
 		this.request = request;
 		this.response = response;
 	}
@@ -80,22 +72,20 @@ public class URIStatInterceptor implements Interceptor {
 				request.getMethod(), resource, methodName,
 				etag, status, hadEtag,
 				cacheControl, size);
-		Transaction tx = session.getTransaction();
-		boolean created = false;
-		if(tx==null || !tx.isActive()) {
-			tx = session.beginTransaction();
-			created = true;
-		}
+		
 		try {
-			session.save(stat);
-			if(created) {
-				tx.commit();
-			}
-		} finally {
-			if(created && tx.isActive()) {
-				tx.rollback();
-			}
+			saveStat(stat);
+		} catch(Exception ex) {
+			ex.printStackTrace();
 		}
+	}
+
+	/**
+	 * Saves this stat where you want
+	 * @param stat
+	 */
+	protected void saveStat(Stat stat) {
+		stat.log();
 	}
 	
 	public static String userKey(Container container) {

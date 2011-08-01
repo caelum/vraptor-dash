@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An stat that represents a specific request to a specific uri from an user at some time.
  * @author guilherme silveira
@@ -60,6 +63,12 @@ public class Stat {
 		this.resource = resource;
 		this.method = action;
 		this.etag = etag;
+	}
+
+	private static final Logger LOG = LoggerFactory.getLogger(Stat.class);
+	
+	public void log() {
+		LOG.debug(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri));
 	}
 
 }

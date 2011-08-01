@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.dash.uristats.URIStatInterceptor;
+import br.com.caelum.vraptor.dash.uristats.BaseURIStatInterceptor;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.ioc.Container;
@@ -36,7 +36,7 @@ public class AuditLogInterceptor implements Interceptor {
 		if (LOG.isInfoEnabled()) {
 			StringBuilder builder = new StringBuilder(String.format(
 					"audit [%s][%s][%s][%s][from %s]", method.toString(),
-					URIStatInterceptor.userKey(container),
+					BaseURIStatInterceptor.userKey(container),
 					request.getRemoteAddr(), request.getRemoteHost(),
 					request.getHeader("X_FORWARDED_FOR")));
 			Audit audit = method.getMethod().getAnnotation(Audit.class);
