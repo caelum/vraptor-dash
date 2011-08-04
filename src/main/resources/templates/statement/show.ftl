@@ -9,7 +9,7 @@
 			$('#graph').hide();
 			$('#cumulativeGraph').click(drawChart);
 			$('#graphShow').click(graphDisplay);
-			<#if resultado[0]?size==2 || resultado[0]?size==3>
+			<#if result[0]?size==2 || result[0]?size==3>
 				$('#cumulativeGraphForm').show();
 			</#if>
 			drawChart();
@@ -21,14 +21,14 @@
         var chartOptions = {width: 800, height: 450, title: 'Statement'};
         var chartDrawArea = document.getElementById('graphCanvas');
 		var data = new google.visualization.DataTable();
-		<#if resultado[0]?size == 2>
+		<#if result[0]?size == 2>
 			data.addColumn('string', 'Column 1');
 			data.addColumn('number', 'Column 2');
 
-			data.addRows(${resultado?size});
+			data.addRows(${result?size});
 			var acumulador = 0;
 			<#assign status = -1>
-			<#list resultado as linha>
+			<#list result as linha>
 				<#assign status = status + 1>
 				data.setCell(${status}, 0, '${linha[0]}');
 				if(acumular == true) {
@@ -40,11 +40,11 @@
 			</#list>
 
 		</#if>
-		<#if resultado[0]?size == 3>
+		<#if result[0]?size == 3>
 			var indiceDaLinha = {};
 			var colunas = {};
 			data.addColumn('string', 'Coluna 1');
-			<#list resultado as linha>
+			<#list result as linha>
 				indiceDaLinha['${linha[0]}'] = 0;
 			</#list>
 			var counter = 1;
@@ -54,7 +54,7 @@
 			}
 			
 			
-			<#list resultado as linha>
+			<#list result as linha>
 				colunas['${linha[1]}'] = 0;
 			</#list>
 			counter = 0;
@@ -72,7 +72,7 @@
 			for (var index in indiceDaLinha) {
 				acumulador[index] = 0;
 			}
-			<#list resultado as linha>
+			<#list result as linha>
 				if (acumular == true) {
 					acumulador['${linha[0]}'] += ${linha[2]};
 					data.setCell(colunas['${linha[1]}'], indiceDaLinha['${linha[0]}'], acumulador['${linha[0]}']);
@@ -81,7 +81,7 @@
 				}
 			</#list>
 		</#if>
-		var columnCount = $('table#resultado tr:first-child td').size();
+		var columnCount = $('table#result tr:first-child td').size();
 		if (columnCount == 2 || columnCount == 3) {
 			var chart = new google.visualization.LineChart(chartDrawArea);
 			chart.draw(data, chartOptions);
@@ -108,13 +108,13 @@
 			<label for="cumulativeGraph">cumulative graph</label>
 		</form>
 	</div>
-	<table id="resultado">
+	<table id="result">
 	<tr>
 	<#list columns as column>
 		<td><strong>${column}</strong></td>
 	</#list>
 	</tr>
-	<#list resultado as row>
+	<#list result as row>
 		<tr>
 		<#list row as value>
 			<td>${value}</td>

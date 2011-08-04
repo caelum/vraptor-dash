@@ -16,7 +16,7 @@ public class StatementDao {
 		this.session = session;
 	}
 
-	public void valida(String hql) {
+	public void validate(String hql) {
 		try {
 			session.createQuery(hql).list();
 		} catch (Exception exception) {
@@ -33,11 +33,11 @@ public class StatementDao {
 				return results;
 			}
 		}
-		List<Object[]> novos = new ArrayList<Object[]>();
+		List<Object[]> wrappedResults = new ArrayList<Object[]>();
 		for (Object o : results) {
-			novos.add(new Object[] { o });
+			wrappedResults.add(new Object[] { o });
 		}
-		return novos;
+		return wrappedResults;
 	}
 
 	public void save(Statement statement) {

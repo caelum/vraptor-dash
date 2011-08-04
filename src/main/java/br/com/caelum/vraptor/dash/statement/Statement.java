@@ -71,13 +71,13 @@ public class Statement {
 		this.hql = hql;
 	}
 
-	public void valida(StatementDao dao) {
+	public void validate(StatementDao dao) {
 		if (hql.contains("delete") || hql.contains("update")) {
 			throw new IllegalArgumentException(
-					"O hql nao pode conter a clausula de delete ou update");
+					"Hql cannot contain DELETE or UPDATE clause");
 		}
 		try {
-			dao.valida(hql);
+			dao.validate(hql);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException(ex);
 		}
@@ -86,11 +86,11 @@ public class Statement {
 	public boolean canBeAccessedWithKey(String key) {
 		return isOpenForOthersWithPassword() && password.equals(key);
 	}
-	
+
 	public boolean isOpenForOthersWithPassword() {
 		return password!=null && !password.isEmpty();
 	}
-	
+
 	public List<String> getColumns() {
 		String onlyFields = stripSelectAndFrom();
 		List<String> columns = new ArrayList<String>();
@@ -100,7 +100,7 @@ public class Statement {
 		}
 		return columns;
 	}
-	
+
 	private String stripSelectAndFrom() {
 		String hql = this.getHql().toLowerCase();
 		int selectPos = hql.indexOf("select") > 0 ? hql.indexOf("select") : 0;

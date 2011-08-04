@@ -6,17 +6,17 @@ import br.com.caelum.vraptor.Result;
 
 @Resource
 public class RequestsController {
-	
-	private Result result;
+
+	private final Result result;
 	private final OpenRequests requests;
 
 	public RequestsController(Result result, OpenRequests requests) {
 		this.result = result;
 		this.requests = requests;
 	}
-	
+
 	@Path("/dash/requests")
-	public void visualiza() {
+	public void show() {
 		result.include("requests", requests.toMap());
 	}
 }

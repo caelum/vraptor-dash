@@ -22,11 +22,11 @@ public class OpenRequestInterceptor implements Interceptor {
 
 	@Override
 	public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) throws InterceptionException {
-		OpenRequest requestAberta = requests.add(method);
+		OpenRequest openRequest = requests.add(method);
 		try {
 			stack.next(method, instance);
 		} finally {
-			requests.remove(requestAberta);
+			requests.remove(openRequest);
 		}
 	}
 

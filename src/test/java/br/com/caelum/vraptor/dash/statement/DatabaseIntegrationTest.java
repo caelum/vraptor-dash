@@ -8,7 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public abstract class AbstractTest {
+public abstract class DatabaseIntegrationTest {
 
 	private static SessionFactory factory;
 	protected Session session;

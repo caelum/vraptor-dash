@@ -29,7 +29,7 @@ public class BasicMonitor {
 			long[] ids = threads.findDeadlockedThreads();
 			if (ids != null) {
 				for (long id : ids) {
-					logger.info("Thread com dead lock? {}",
+					logger.info("Thread with dead lock? {}",
 							threads.getThreadInfo(id).getThreadName());
 					logTrace(threads.getThreadInfo(id).getStackTrace());
 				}
@@ -39,7 +39,7 @@ public class BasicMonitor {
 			long[] ids = threads.findMonitorDeadlockedThreads();
 			if (ids != null) {
 				for (long id : ids) {
-					logger.info("Thread com synchronized lock? {}", threads
+					logger.info("Thread with synchronized lock? {}", threads
 							.getThreadInfo(id).getThreadName());
 					logTrace(threads.getThreadInfo(id).getStackTrace());
 				}

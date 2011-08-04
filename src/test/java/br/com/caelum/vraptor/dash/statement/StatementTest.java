@@ -1,50 +1,52 @@
 package br.com.caelum.vraptor.dash.statement;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
-public class StatementTest extends AbstractTest {
+public class StatementTest extends DatabaseIntegrationTest {
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testSeNaoPermiteClausulaDelete(){
+	public void deleteIsNotValid(){
 		String hql = "delete from DashStatement";
-		Statement r = new Statement(hql, hql);
-		r.valida(new StatementDao(session));
+		Statement stmt = new Statement(hql, hql);
+		stmt.validate(new StatementDao(session));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testSeNaoPermiteClausulaUpdate(){
+	public void updateIsNotValid(){
 		String hql = "update from DashStatement";
-		Statement r = new Statement(hql, hql);
-		r.valida( new StatementDao(session));
+		Statement stmt = new Statement(hql, hql);
+		stmt.validate( new StatementDao(session));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testValidaHqlInvalido() {
+	public void hqlReferencingUnexistingEntityIsNotValid() {
 		Statement statement = new Statement("inexisting", "from SomethingThatDoesNotExist");
-		statement.valida(new StatementDao(session));
+		statement.validate(new StatementDao(session));
 	}
 
 	@Test
-	public void testCanAccessAStatementWithTheCorrectKey() {
+	public void canAccessAStatementWithTheCorrectKey() {
 		Statement statement = new Statement("inexisting", "from SomethingThatDoesNotExist");
 		statement.setPassword("mykey");
-		Assert.assertTrue(statement.canBeAccessedWithKey("mykey"));
+		assertTrue(statement.canBeAccessedWithKey("mykey"));
 	}
 
 	@Test
-	public void testCannotAccessIfThereIsNoPassword() {
+	public void cannotAccessIfThereIsNoPassword() {
 		Statement statement = new Statement("inexisting", "from SomethingThatDoesNotExist");
-		Assert.assertFalse(statement.canBeAccessedWithKey(null));
-		Assert.assertFalse(statement.canBeAccessedWithKey("myKey"));
+		assertFalse(statement.canBeAccessedWithKey(null));
+		assertFalse(statement.canBeAccessedWithKey("myKey"));
 	}
 
 	@Test
-	public void testCannotAccessWithWrongKey() {
+	public void cannotAccessWithWrongKey() {
 		Statement statement = new Statement("inexisting", "from SomethingThatDoesNotExist");
 		statement.setPassword("mykey");
-		Assert.assertFalse(statement.canBeAccessedWithKey(null));
-		Assert.assertFalse(statement.canBeAccessedWithKey("myKEY"));
+		assertFalse(statement.canBeAccessedWithKey(null));
+		assertFalse(statement.canBeAccessedWithKey("myKEY"));
 	}
 
 }

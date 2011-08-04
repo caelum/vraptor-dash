@@ -27,25 +27,25 @@ import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
 import com.mchange.v2.c3p0.mbean.C3P0PooledDataSource;
 
 @Resource
-public class AuditoriaController {
+public class AuditController {
 
 	private final Session session;
 	private final Result result;
 
-	public AuditoriaController(Session session, Result result) {
+	public AuditController(Session session, Result result) {
 		this.session = session;
 		this.result = result;
 	}
 
 	@Path("/auditoria/estatisticas")
-	public void listaEstatisticas() throws IOException {
+	public void listStats() throws IOException {
 		session.getSessionFactory().getStatistics();
 
 		result.forwardTo("");
 	}
 	
 	@Path("/auditoria/painelDeControle")
-	public void painelDeControle() {
+	public void controlPanel() {
 		NumberFormat decimalFormat = NumberFormat.getNumberInstance();
 		decimalFormat.setGroupingUsed(true);
 
@@ -128,18 +128,18 @@ public class AuditoriaController {
 		}
 		result.include("ehCacheStatsList", collectionsCacheStatsList);
 		
-		inclueObjetoNoResult("numBusyCon", c3p0PooledDataSource, "getNumBusyConnectionsAllUsers");
-		inclueObjetoNoResult("numCon", c3p0PooledDataSource, "getNumConnectionsAllUsers");
-		inclueObjetoNoResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers");
-		inclueObjetoNoResult("numUserPools", c3p0PooledDataSource, "getNumUserPools");
+		includeMethodInvocationReturnInResult("numBusyCon", c3p0PooledDataSource, "getNumBusyConnectionsAllUsers");
+		includeMethodInvocationReturnInResult("numCon", c3p0PooledDataSource, "getNumConnectionsAllUsers");
+		includeMethodInvocationReturnInResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers");
+		includeMethodInvocationReturnInResult("numUserPools", c3p0PooledDataSource, "getNumUserPools");
 	}
 	
-	void inclueObjetoNoResult(String nome, Object obj, String methodName) {
+	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName) {
 		try {
 			Object toBeIncluded = new Mirror().on(obj).invoke().method(methodName).withoutArgs();
-			result.include(nome, toBeIncluded);
+			result.include(name, toBeIncluded);
 		} catch (Exception e) {
-			result.include(nome, "not found");
+			result.include(name, "not found");
 		}
 	}
 }

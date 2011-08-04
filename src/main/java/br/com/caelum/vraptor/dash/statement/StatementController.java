@@ -3,7 +3,6 @@ package br.com.caelum.vraptor.dash.statement;
 import java.io.IOException;
 import java.util.List;
 
-import freemarker.template.TemplateException;
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -16,6 +15,7 @@ import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.validator.ValidationMessage;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
+import freemarker.template.TemplateException;
 
 @Resource
 public class StatementController {
@@ -54,7 +54,7 @@ public class StatementController {
 		statement = statements.load(statement.getId());
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
-			validaStatement(statement);
+			validateStatement(statement);
 			List<Object[]> results = statements.execute(statement);
 			List<String> columns = statement.getColumns();
 			if(results.isEmpty()) {
@@ -62,7 +62,7 @@ public class StatementController {
 			} else {
 				marker.use(SHOW)
 					.with("statement", statement)
-					.with("resultado", results)
+					.with("result", results)
 					.with("columns", columns)
 					.render();
 			}
@@ -78,7 +78,7 @@ public class StatementController {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
-		validaStatement(statement);
+		validateStatement(statement);
 		statements.save(statement);
 		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword());
 	}
@@ -86,7 +86,7 @@ public class StatementController {
 	@Path("/dash/statements/{statement.id}")
 	@Put
 	public void update(Statement statement) throws IOException, TemplateException {
-		validaStatement(statement);
+		validateStatement(statement);
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
@@ -95,11 +95,11 @@ public class StatementController {
 		loaded.setHql(statement.getHql());
 		loaded.setName(statement.getName());
 		loaded.setPassword(statement.getPassword());
-		validaStatement(loaded);
+		validateStatement(loaded);
 		statements.merge(loaded);
 		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
 	}
-	
+
 	@Path("/dash/statements/{statement.id}")
 	@Delete
 	public void delete(Statement statement) {
@@ -107,11 +107,11 @@ public class StatementController {
 		result.nothing();
 	}
 
-	private void validaStatement(Statement statement) throws IOException, TemplateException {
+	private void validateStatement(Statement statement) throws IOException, TemplateException {
 		try {
-			statement.valida(statements);
+			statement.validate(statements);
 		} catch (IllegalArgumentException e) {
-			validator.add(new ValidationMessage("hql_invalido", "hql_invalido", e.getCause().getMessage()));
+			validator.add(new ValidationMessage("invalid_hql", "invalid_hql", e.getCause().getMessage()));
 			validator.onErrorUse(Results.logic()).forwardTo(getClass()).index();
 		}
 	}

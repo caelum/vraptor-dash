@@ -1,72 +1,73 @@
 package br.com.caelum.vraptor.dash.audit;
 
+import static br.com.caelum.vraptor.dash.matchers.IsOfResourceMatcher.isOpenRequestOfResource;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequestInterceptor;
 import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequest;
+import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequestInterceptor;
 import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequests;
 import br.com.caelum.vraptor.resource.DefaultResourceClass;
 import br.com.caelum.vraptor.resource.ResourceClass;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LogRequestTimeInterceptorTest {
 
-	@Test
-	public void insereRecursoCorretamenteEmRequestsAbertas() throws Exception {
-		InterceptorStack stack = mock(InterceptorStack.class);
+	private OpenRequestInterceptor interceptor;
+	private @Mock OpenRequests requests;
+	private @Mock InterceptorStack stack;
+	private @Mock ResourceMethod resourceMethod;
 
-		ResourceMethod resourceMethod = mock(ResourceMethod.class);
+	@Before
+	public void setUp() throws Exception {
+		configureMockResourceMethod();
 
-		final Method method = Class.class.getDeclaredMethods()[0];
+		OpenRequest openRequest = new OpenRequest(resourceMethod);
+		when(requests.add(resourceMethod)).thenReturn(openRequest);
+
+		interceptor = new OpenRequestInterceptor(requests);
+	}
+
+	private void configureMockResourceMethod() {
+		Method method = Class.class.getDeclaredMethods()[0];
 		when(resourceMethod.getMethod()).thenReturn(method);
 
-		final ResourceClass resourceClass = new DefaultResourceClass(Class.class);
+		ResourceClass resourceClass = new DefaultResourceClass(Class.class);
 		when(resourceMethod.getResource()).thenReturn(resourceClass);
+	}
 
-		OpenRequests requests = mock(OpenRequests.class);
-		final OpenRequest requestAberta = new OpenRequest(method, resourceClass.getType());
-
-		OpenRequestInterceptor interceptor = new OpenRequestInterceptor(requests);
+	@Test
+	public void addsAndRemovesResourceMethodsInOpenRequestsBeforeAndAfterStackExecutionRespectively() throws Exception {
 		interceptor.intercept(stack, resourceMethod, null);
 
-		// Verifica que o elemento adicionado no RequestsAbertas tem o "recurso"
-		// (Nome do metodo e da classe) esperados
-		verify(requests).add(argThat(new VerificaRequestApenasPorRecurso(requestAberta)));
-
+		InOrder inOrder = inOrder(requests, stack);
+		inOrder.verify(requests).add(resourceMethod);
+		inOrder.verify(stack).next(resourceMethod, null);
+		inOrder.verify(requests).remove(argThat(isOpenRequestOfResource(resourceMethod)));
 	}
 
-	private final class VerificaRequestApenasPorRecurso extends TypeSafeMatcher<OpenRequest> {
-		private final OpenRequest requestAberta;
+	@Test(expected=InterceptionException.class)
+	public void addsAndRemovesResourceMethodsInOpenRequestsEvenWhenStackExecutionThrowsException() throws Exception {
+		doThrow(new InterceptionException("execution failed")).when(stack).next(resourceMethod, null);
 
-		private VerificaRequestApenasPorRecurso(OpenRequest requestAberta) {
-			this.requestAberta = requestAberta;
-		}
+		interceptor.intercept(stack, resourceMethod, null);
 
-		@Override
-		public void describeTo(Description description) {
-			description.appendText("That t");
-		}
-
-		@Override
-		protected boolean matchesSafely(OpenRequest item) {
-			return requestAberta.getRecurso().equals(item.getRecurso());
-		}
-
-		@Override
-		protected void describeMismatchSafely(OpenRequest item, Description mismatchDescription) {
-			// TODO Auto-generated method stub
-
-		}
+		verify(requests).add(resourceMethod);
+		verify(requests).remove(argThat(isOpenRequestOfResource(resourceMethod)));
 	}
-
 }

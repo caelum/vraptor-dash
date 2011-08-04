@@ -4,23 +4,29 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Random;
 
+import br.com.caelum.vraptor.resource.ResourceMethod;
+
 public class OpenRequest {
 
-	private String resource;
-	private Calendar startingTime;
-	private long id;
+	private final String resource;
+	private final Calendar startingTime;
+	private final long id;
+
+	public OpenRequest(ResourceMethod resourceMethod) {
+		this(resourceMethod.getMethod(), resourceMethod.getResource().getType());
+	}
 
 	public OpenRequest(Method method, Class<?> type) {
 		this(method, type, Calendar.getInstance());
 	}
 
-	public OpenRequest(Method method, Class<?> type, Calendar momentoInicial) {
+	public OpenRequest(Method method, Class<?> type, Calendar startingTime) {
 		this.resource = ("Method: " + method.getName()+ ", Type: " + type.getName());
-		this.startingTime = momentoInicial;
+		this.startingTime = startingTime;
 		this.id = hashCode() * new Random().nextInt();
 	}
 
-	public String getRecurso() {
+	public String getResource() {
 		return resource;
 	}
 
@@ -35,27 +41,34 @@ public class OpenRequest {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		OpenRequest other = (OpenRequest) obj;
 		if (startingTime == null) {
-			if (other.startingTime != null)
+			if (other.startingTime != null) {
 				return false;
-		} else if (!startingTime.equals(other.startingTime))
+			}
+		} else if (!startingTime.equals(other.startingTime)) {
 			return false;
+		}
 		if (resource == null) {
-			if (other.resource != null)
+			if (other.resource != null) {
 				return false;
-		} else if (!resource.equals(other.resource))
+			}
+		} else if (!resource.equals(other.resource)) {
 			return false;
+		}
 		return true;
 	}
 
-	public Long getIntervaloEmSegundos() {
+	public Long getLivingTimeInSeconds() {
 		return (Calendar.getInstance().getTimeInMillis() - this.startingTime.getTimeInMillis()) / 1000;
 	}
 

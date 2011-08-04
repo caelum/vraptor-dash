@@ -1,7 +1,6 @@
 package br.com.caelum.vraptor.dash.monitor;
 
 import java.io.ByteArrayInputStream;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,21 +11,20 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import freemarker.template.TemplateException;
-
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.dash.audit.Audit;
-import br.com.caelum.vraptor.dash.hibernate.AuditoriaController;
+import br.com.caelum.vraptor.dash.hibernate.AuditController;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
+import freemarker.template.TemplateException;
 
 @Resource
 public class SystemController {
 
-	private static Logger log = LoggerFactory.getLogger(AuditoriaController.class);
+	private static Logger log = LoggerFactory.getLogger(AuditController.class);
 	private final Freemarker marker;
-	
+
 	public SystemController(Freemarker marker) {
 		this.marker = marker;
 	}
@@ -57,6 +55,6 @@ public class SystemController {
 
 	@Path("/dash/threads")
 	public void threads() throws IOException, TemplateException {
-		marker.use("/WEB-INF/jsp/auditoria/basic_monitor.jsp").render();
+		marker.use("audit/basicMonitor").render();
 	}
 }

@@ -15,8 +15,7 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
 @Component
 public class AuditLogInterceptor implements Interceptor {
 
-	private static final Logger LOG = Logger
-			.getLogger(AuditLogInterceptor.class);
+	private static final Logger LOG = Logger.getLogger(AuditLogInterceptor.class);
 	private final HttpServletRequest request;
 	private final Container container;
 

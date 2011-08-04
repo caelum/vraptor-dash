@@ -30,10 +30,10 @@ public class VRaptorController {
 
 	@Path("/dash/routes")
 	public InputStreamDownload allRoutes() throws IOException {
-		List<Route> lista = new ArrayList<Route>(router.allRoutes());
-		Collections.sort(lista, new CompareByRouteToString());
+		List<Route> routes = new ArrayList<Route>(router.allRoutes());
+		Collections.sort(routes, new CompareByRouteToString());
 		StringBuilder sb = new StringBuilder();
-		for (Route route : lista) {
+		for (Route route : routes) {
 			sb.append(route.toString() + "\n");
 		}
 		return new InputStreamDownload(new ByteArrayInputStream(sb.toString().getBytes()), "text/plain", "log.log");
