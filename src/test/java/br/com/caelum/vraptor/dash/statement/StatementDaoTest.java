@@ -56,4 +56,15 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		assertEquals("from First", result.get(0)[1]);
 		assertEquals("from Second", result.get(1)[1]);
 	}
+	
+	@Test
+	public void shouldOnlyReturn100Itens() {
+		Transaction tx = session.beginTransaction();
+		for (int i = 1 ; i <= 110; i++) {
+			session.save(new Statement("" + i, "from First"));
+		}
+		tx.commit();
+		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"));
+		assertEquals(100, results.size());
+	}
 }

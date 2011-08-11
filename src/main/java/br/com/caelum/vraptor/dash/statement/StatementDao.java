@@ -3,6 +3,7 @@ package br.com.caelum.vraptor.dash.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import br.com.caelum.vraptor.ioc.Component;
@@ -26,7 +27,7 @@ public class StatementDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> execute(Statement st) {
-		List<Object[]> results = session.createQuery(st.getHql()).list();
+		List<Object[]> results = createQuery(st.getHql()).list();
 		if (!results.isEmpty()) {
 			Object object = results.get(0);
 			if (object.getClass().isArray()) {
@@ -58,7 +59,11 @@ public class StatementDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Statement> all() {
-		return session.createQuery("from DashStatement").setCacheable(true).list();
+		return createQuery("from DashStatement").setCacheable(true).setMaxResults(100).list();
+	}
+	
+	private Query createQuery(String hql) {
+		return session.createQuery(hql).setMaxResults(100);
 	}
 
 }
