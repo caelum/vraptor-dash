@@ -69,17 +69,19 @@
 	<script type="text/javascript">
 		$(function() {
 			$(".remove_stmt").click(function() {
-				var stmtId = $(this).data('stmtid');
-				$.ajax({
-					url:'statements/'+ stmtId,
-					type:'DELETE',
-					success: function() {
-						link = $("#trStatement_"+ stmtId);
-						$(link).fadeOut(700, function() {
-							link.remove();
-						});
-					}
-				});
+				if(confirm("do you really want to delete it?")){
+					var stmtId = $(this).data('stmtid');
+					$.ajax({
+						url:'statements/'+ stmtId,
+						type:'DELETE',
+						success: function() {
+							link = $("#trStatement_"+ stmtId);
+							$(link).fadeOut(700, function() {
+								link.remove();
+							});
+						}
+					});
+				}
 				return false;
 			});
 		});
