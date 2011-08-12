@@ -66,6 +66,11 @@
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>br.com.caelum.vraptor</groupId>
+			<artifactId>vraptor-environment</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
