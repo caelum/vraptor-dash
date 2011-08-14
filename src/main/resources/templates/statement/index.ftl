@@ -5,7 +5,7 @@
 <body>
 	<h2 class="pagetitle">Statement</h2>
 	<div style="float:left" class="formulario">
-		<form id="frmStatement" action='' method="post" >
+		<form id="frmStatement" action='/dash/statements/execute' method="post" >
 			<div style="float:left; padding: 3px;margin: 2px;" >
 				<label class="strong">Name</label>: &nbsp;
 				<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>
@@ -15,7 +15,8 @@
 			</div>
 	
 			<div style="padding-top:3px; clear:left">
-				<input type="submit" value="Create" />
+				<input type="submit" id="execute" value="Execute" />
+				<input type="button" id="create" value="Create" />
 			</div>
 	
 		</form>
@@ -84,6 +85,11 @@
 				}
 				return false;
 			});
+			
+			$('#create').click(function(){
+				$('#frmStatement').attr('action','statements').submit();
+			});
+		
 		});
 	</script>
 </body>

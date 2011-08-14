@@ -70,6 +70,27 @@ public class StatementController {
 			result.use(HttpResult.class).sendError(401);
 		}
 	}
+	
+	
+	@Path("/dash/statements/execute")
+	@Post
+	public void execute(Statement statement) throws IOException, TemplateException {
+		
+		validateStatement(statement);
+		List<Object[]> results = statements.execute(statement);
+		List<String> columns = statement.getColumns();
+		if(results.isEmpty()) {
+			marker.use(NONE).render();
+		} else {
+			marker.use(SHOW)
+				.with("statement", statement)
+				.with("result", results)
+				.with("columns", columns)
+				.render();
+		}
+		
+	}
+	
 
 	@Path("/dash/statements")
 	@Post
