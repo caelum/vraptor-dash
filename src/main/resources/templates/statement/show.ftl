@@ -108,6 +108,13 @@
 			<label for="cumulativeGraph">cumulative graph</label>
 		</form>
 	</div>
+	<br/>
+	<br/>
+	<div>
+	<label class="strong">Hql:</label>
+	<textarea>${statement.hql}</textarea>
+	</div>
+	<br/>
 	<table id="result">
 	<tr>
 	<#list columns as column>
