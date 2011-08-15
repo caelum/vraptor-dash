@@ -32,19 +32,25 @@ public class AuditLogInterceptor implements Interceptor {
 	@Override
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object object) throws InterceptionException {
-		if (LOG.isInfoEnabled()) {
-			StringBuilder builder = new StringBuilder(String.format(
-					"audit [%s][%s][%s][%s][from %s]", method.toString(),
-					BaseURIStatInterceptor.userKey(container),
-					request.getRemoteAddr(), request.getRemoteHost(),
-					request.getHeader("X_FORWARDED_FOR")));
-			Audit audit = method.getMethod().getAnnotation(Audit.class);
-			for (String value : audit.value()) {
-				builder.append(value + "->" + request.getParameter(value)
-						+ "\n");
+		try {
+			if (LOG.isInfoEnabled()) {
+				StringBuilder builder = new StringBuilder(String.format(
+						"audit [%s][%s][%s][%s][from %s]", method.toString(),
+						BaseURIStatInterceptor.userKey(container),
+						request.getRemoteAddr(), request.getRemoteHost(),
+						request.getHeader("X_FORWARDED_FOR")));
+				Audit audit = method.getMethod().getAnnotation(Audit.class);
+				for (String value : audit.value()) {
+					builder.append(value + "->" + request.getParameter(value)
+							+ "\n");
+				}
+				LOG.info(builder.toString());
 			}
-			LOG.info(builder.toString());
+			stack.next(method, object);
+		
+		
+		} catch (Exception ex) {
+			LOG.error("error:",ex);
 		}
-		stack.next(method, object);
 	}
 }
