@@ -56,7 +56,7 @@
 								totally closed
 							</#if>
 						</td>
-						<td id="corpoStmt_${stmt.id}">${stmt.hql}</td>
+						<td id="corpoStmt_${stmt.id}">${stmt.escapedHql}</td>
 						<td>
 							<a style="cursor:pointer" class="remove_stmt" id="remove_${stmt.id}" data-stmtid="${stmt.id}">remove</a>
 						</td>

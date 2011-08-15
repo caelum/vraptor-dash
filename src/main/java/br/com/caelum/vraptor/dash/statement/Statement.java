@@ -68,6 +68,12 @@ public class Statement {
 	public String getHql() {
 		return hql;
 	}
+	
+	public String getEscapedHql() {
+		String escapedHql = hql.replace("<", "&lt;");
+		escapedHql =  escapedHql.replace(">", "&gt;");
+		return escapedHql;
+	}
 
 	public void setHql(String hql) {
 		this.hql = hql;
