@@ -3,6 +3,8 @@ package br.com.caelum.vraptor.dash.statement;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -29,13 +31,16 @@ public class StatementController {
 	private final StatementDao statements;
 	private final StatementAwareUser currentUser;
 	private final Freemarker marker;
+	private final HttpServletResponse response;
 
-	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser, Freemarker marker) {
+	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser, 
+			Freemarker marker, HttpServletResponse response) {
 		this.result = result;
 		this.validator = validator;
 		this.statements = statementDao;
 		this.currentUser = currentUser;
 		this.marker = marker;
+		this.response = response;
 	}
 
 	@Path("/dash/statements")
@@ -46,6 +51,7 @@ public class StatementController {
 			return;
 		}
 		marker.use(INDEX).with("statements", statements.all()).render();
+		response.setContentType("text/html");
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -69,6 +75,7 @@ public class StatementController {
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}
+		response.setContentType("text/html");
 	}
 	
 	
@@ -88,6 +95,7 @@ public class StatementController {
 				.with("columns", columns)
 				.render();
 		}
+		response.setContentType("text/html");
 		
 	}
 	
@@ -102,6 +110,7 @@ public class StatementController {
 		validateStatement(statement);
 		statements.save(statement);
 		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword());
+		response.setContentType("text/html");
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -119,6 +128,7 @@ public class StatementController {
 		validateStatement(loaded);
 		statements.merge(loaded);
 		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
+		response.setContentType("text/html");
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -126,6 +136,7 @@ public class StatementController {
 	public void delete(Statement statement) {
 		statements.delete(statement);
 		result.nothing();
+		response.setContentType("text/html");
 	}
 
 	private void validateStatement(Statement statement) throws IOException, TemplateException {
