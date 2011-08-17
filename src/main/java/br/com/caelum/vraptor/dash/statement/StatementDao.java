@@ -27,15 +27,12 @@ public class StatementDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> execute(Statement st) {
-		List<Object[]> results = createQuery(st.getHql()).list();
-		if (!results.isEmpty()) {
-			Object object = results.get(0);
-			if (object.getClass().isArray()) {
-				return results;
-			}
+		List results = createQuery(st.getHql()).list();
+		if (!results.isEmpty() && results.get(0).getClass().isArray()) {
+			return results;
 		}
 		List<Object[]> wrappedResults = new ArrayList<Object[]>();
-		for (Object o : results) {
+		for (Object o : results) { 
 			wrappedResults.add(new Object[] { o });
 		}
 		return wrappedResults;
