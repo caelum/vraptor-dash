@@ -1,5 +1,7 @@
 package br.com.caelum.vraptor.dash.uristats;
 
+import java.util.Enumeration;
+
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,7 +77,9 @@ public class BaseURIStatInterceptor implements Interceptor {
 				}
 			}
 			
-			Stat stat = new Stat(key, request.getRequestURI(), time,
+			String queryString = extractQueryString();
+			
+			Stat stat = new Stat(key, request.getRequestURI(), queryString, time,
 					request.getMethod(), resource, methodName,
 					etag, status, hadEtag,
 					cacheControl, size);
@@ -89,6 +93,21 @@ public class BaseURIStatInterceptor implements Interceptor {
 		} catch (Exception ex) {
 			LOG.error("error:", ex);
 		}
+	}
+
+	private String extractQueryString() {
+		String queryString = "";
+		Enumeration<String> paramNames = request.getParameterNames();
+		boolean hadParameter = false;
+		while(paramNames.hasMoreElements()) {
+			if(hadParameter) {
+				queryString += "&";
+			}
+			String name = paramNames.nextElement();
+			queryString += name + "=" + request.getParameter(name);
+			hadParameter = true;
+		}
+		return queryString;
 	}
 
 	/**
