@@ -11,7 +11,13 @@
 				<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>
 				<label class="strong">Password</label>: &nbsp;
 				<input id="passwordStmt" type="password" name="statement.password" value=""/><br/><br/>
-				<textarea id="hqlToExecute" style="width: 600px; height: 200px" name="statement.hql"></textarea>
+				
+				<div id="query">
+					<textarea id="hqlToExecute" style="width: 600px; height: 200px" name="statement.hql"></textarea>
+					<ul id="parameters" style="float: right; list-style:none; margin: 0px; padding-left:10px; width:600px;">
+					</ul>
+				</div>
+				
 			</div>
 	
 			<div style="padding-top:3px; clear:left">
@@ -68,6 +74,7 @@
 	<br/>
 	
 	<script type="text/javascript">
+	
 		$(function() {
 			$(".remove_stmt").click(function() {
 				if(confirm("do you really want to delete it?")){
@@ -89,7 +96,24 @@
 			$('#create').click(function(){
 				$('#frmStatement').attr('action','statements').submit();
 			});
-		
+			
+			
+			var parameterCount = 1;
+			
+			$('#hqlToExecute').keypress(function(event){
+    
+    			// 63 is the code for '?'
+			    if(event.which == 63) {
+			      var input = '<li style="padding-bottom:3px; float:left; margin-right:6px; margin-right:6px;" id="parameter{p}">'+
+			      			  '<label class="strong">Parameter {p}:</label>'+
+			      			  '<input type="text" name="parameter{p}" style="margin-left:5px"></li>';
+			      
+			      $('#parameters').append(input.replace(/{([{p}]*)}/g,parameterCount));
+			      parameterCount++;
+			    }
+
+			});
+			
 		});
 	</script>
 </body>
