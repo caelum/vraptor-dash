@@ -106,7 +106,7 @@
 			    if(event.which == 63) {
 			      var input = '<li style="padding-bottom:3px; float:left; margin-right:6px; margin-right:6px;" id="parameter{p}">'+
 			      			  '<label class="strong">Parameter {p}:</label>'+
-			      			  '<input type="text" name="parameter{p}" style="margin-left:5px"></li>';
+			      			  '<input type="text" name="parameters[{p}]" style="margin-left:5px"></li>';
 			      
 			      $('#parameters').append(input.replace(/{([{p}]*)}/g,parameterCount));
 			      parameterCount++;

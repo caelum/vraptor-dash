@@ -79,13 +79,13 @@ public class Statement {
 		this.hql = hql;
 	}
 
-	public void validate(StatementDao dao) {
+	public void validate(StatementDao dao, List<String> parameters) {
 		if (hql.contains("delete") || hql.contains("update")) {
 			throw new IllegalArgumentException(
 					"Hql cannot contain DELETE or UPDATE clause");
 		}
 		try {
-			dao.validate(hql);
+			dao.validate(hql,parameters);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException(ex);
 		}

@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.dash.statement;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Transaction;
@@ -11,17 +12,17 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 
 	@Test(expected=IllegalArgumentException.class)
 	public void throwsExceptionWhenValidatingInvalidHql() {
-		new StatementDao(session).validate("select");
+		new StatementDao(session).validate("select",null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void throwsExceptionWhenValidatingHqlThatDoesNotExecute() throws Exception {
-		new StatementDao(session).validate("from DashStatement as d where d.a_b_c__d = 1");
+		new StatementDao(session).validate("from DashStatement as d where d.a_b_c__d = 1",null);
 	}
 
 	@Test
 	public void returnsAnEmptyListForAStatementWithoutResults() throws Exception {
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"));
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"), null);
 		assertEquals(0, result.size());
 	}
 
@@ -31,7 +32,7 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		session.save(new Statement("first", "from First"));
 		session.save(new Statement("second", "from Second"));
 		tx.commit();
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"));
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"),null);
 
 		assertEquals(2, result.size());
 		assertEquals(1, result.get(0).length);
@@ -46,7 +47,7 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		session.save(new Statement("first", "from First"));
 		session.save(new Statement("second", "from Second"));
 		tx.commit();
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"));
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"), null);
 
 		assertEquals(2, result.size());
 		assertEquals(2, result.get(0).length);
@@ -64,7 +65,20 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 			session.save(new Statement("" + i, "from First"));
 		}
 		tx.commit();
-		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"));
+		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"), null);
 		assertEquals(100, results.size());
+	}
+	
+	@Test
+	public void shouldExecuteAQueryWithParameters() {
+		Transaction tx = session.beginTransaction();
+		session.save(new Statement("first", "from First"));
+		session.save(new Statement("last", "from Last"));
+		tx.commit();
+		
+		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement where name = ?"), Arrays.<String>asList("first"));
+		assertEquals(1,results.size());
+		assertEquals("first",results.get(0)[0]);
+		assertEquals("from First",results.get(0)[1]);
 	}
 }

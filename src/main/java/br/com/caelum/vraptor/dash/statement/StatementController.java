@@ -55,8 +55,8 @@ public class StatementController {
 		statement = statements.load(statement.getId());
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
-			validateStatement(statement);
-			List<Object[]> results = statements.execute(statement);
+			validateStatement(statement,null);
+			List<Object[]> results = statements.execute(statement,null);
 			List<String> columns = statement.getColumns();
 			renderResponse(statement, results, columns);
 		} else {
@@ -80,10 +80,10 @@ public class StatementController {
 	
 	@Path("/dash/statements/execute")
 	@Post
-	public void execute(Statement statement) throws IOException, TemplateException {
+	public void execute(Statement statement, List<String> parameters) throws IOException, TemplateException {
 		
-		validateStatement(statement);
-		List<Object[]> results = statements.execute(statement);
+		validateStatement(statement,parameters);
+		List<Object[]> results = statements.execute(statement,parameters);
 		List<String> columns = statement.getColumns();
 		renderResponse(statement, results, columns);
 	}
@@ -96,7 +96,7 @@ public class StatementController {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
-		validateStatement(statement);
+		validateStatement(statement,null);
 		statements.save(statement);
 		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword());
 	}
@@ -104,7 +104,7 @@ public class StatementController {
 	@Path("/dash/statements/{statement.id}")
 	@Put
 	public void update(Statement statement) throws IOException, TemplateException {
-		validateStatement(statement);
+		validateStatement(statement,null);
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
@@ -113,7 +113,7 @@ public class StatementController {
 		loaded.setHql(statement.getHql());
 		loaded.setName(statement.getName());
 		loaded.setPassword(statement.getPassword());
-		validateStatement(loaded);
+		validateStatement(loaded,null);
 		statements.merge(loaded);
 		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
 	}
@@ -125,9 +125,9 @@ public class StatementController {
 		result.nothing();
 	}
 
-	private void validateStatement(Statement statement) throws IOException, TemplateException {
+	private void validateStatement(Statement statement, List<String> parameters) throws IOException, TemplateException {
 		try {
-			statement.validate(statements);
+			statement.validate(statements,parameters);
 		} catch (IllegalArgumentException e) {
 			validator.add(new ValidationMessage("invalid_hql", "invalid_hql", e.getCause().getMessage()));
 			validator.onErrorUse(Results.logic()).forwardTo(getClass()).index();

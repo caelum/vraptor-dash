@@ -32,20 +32,20 @@ public class StatementTest extends DatabaseIntegrationTest {
 	public void deleteIsNotValid(){
 		String hql = "delete from DashStatement";
 		Statement stmt = new Statement(hql, hql);
-		stmt.validate(new StatementDao(session));
+		stmt.validate(new StatementDao(session),null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void updateIsNotValid(){
 		String hql = "update from DashStatement";
 		Statement stmt = new Statement(hql, hql);
-		stmt.validate( new StatementDao(session));
+		stmt.validate( new StatementDao(session),null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void hqlReferencingUnexistingEntityIsNotValid() {
 		Statement statement = new Statement("inexisting", "from SomethingThatDoesNotExist");
-		statement.validate(new StatementDao(session));
+		statement.validate(new StatementDao(session),null);
 	}
 
 	@Test

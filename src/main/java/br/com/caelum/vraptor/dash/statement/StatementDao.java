@@ -17,17 +17,19 @@ public class StatementDao {
 		this.session = session;
 	}
 
-	public void validate(String hql) {
+	public void validate(String hql, List<String> parameters) {
 		try {
-			session.createQuery(hql).list();
+			createQuery(hql,parameters).list();
 		} catch (Exception exception) {
 			throw new IllegalArgumentException(exception);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> execute(Statement st) {
-		List results = createQuery(st.getHql()).list();
+	public List<Object[]> execute(Statement st, List<String> parameters) {
+		
+		List results = createQuery(st.getHql(),parameters).list();
+		
 		if (!results.isEmpty() && results.get(0).getClass().isArray()) {
 			return results;
 		}
@@ -56,11 +58,20 @@ public class StatementDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Statement> all() {
-		return createQuery("from DashStatement").setCacheable(true).setMaxResults(100).list();
+		return createQuery("from DashStatement",null).setCacheable(true).setMaxResults(100).list();
 	}
 	
-	private Query createQuery(String hql) {
-		return session.createQuery(hql).setMaxResults(100);
+	private Query createQuery(String hql, List<String> parameters) {
+		
+		Query query = session.createQuery(hql);
+
+		if(parameters != null) {
+			for(int i = 0; i < parameters.size(); i++) {
+				query.setParameter(i,parameters.get(i));
+			}
+		}
+		
+		return query.setMaxResults(100);
 	}
 
 }
