@@ -1,13 +1,12 @@
 package br.com.caelum.vraptor.dash.hibernate;
 
 import java.io.IOException;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.ehcache.CacheManager;
 import net.vidageek.mirror.dsl.Mirror;
@@ -33,12 +32,10 @@ public class AuditController {
 
 	private final Session session;
 	private final Result result;
-	private final HttpServletResponse response;
 
-	public AuditController(Session session, Result result, HttpServletResponse response) {
+	public AuditController(Session session, Result result) {
 		this.session = session;
 		this.result = result;
-		this.response = response;
 	}
 
 	@Path("/auditoria/estatisticas")
@@ -136,8 +133,6 @@ public class AuditController {
 		includeMethodInvocationReturnInResult("numCon", c3p0PooledDataSource, "getNumConnectionsAllUsers");
 		includeMethodInvocationReturnInResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers");
 		includeMethodInvocationReturnInResult("numUserPools", c3p0PooledDataSource, "getNumUserPools");
-		
-		response.setContentType("text/html");
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName) {

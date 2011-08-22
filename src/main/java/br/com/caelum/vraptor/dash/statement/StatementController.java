@@ -3,8 +3,6 @@ package br.com.caelum.vraptor.dash.statement;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -31,16 +29,14 @@ public class StatementController {
 	private final StatementDao statements;
 	private final StatementAwareUser currentUser;
 	private final Freemarker marker;
-	private final HttpServletResponse response;
 
 	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser, 
-			Freemarker marker, HttpServletResponse response) {
+			Freemarker marker) {
 		this.result = result;
 		this.validator = validator;
 		this.statements = statementDao;
 		this.currentUser = currentUser;
 		this.marker = marker;
-		this.response = response;
 	}
 
 	@Path("/dash/statements")
@@ -51,7 +47,6 @@ public class StatementController {
 			return;
 		}
 		marker.use(INDEX).with("statements", statements.all()).render();
-		response.setContentType("text/html");
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -63,19 +58,23 @@ public class StatementController {
 			validateStatement(statement);
 			List<Object[]> results = statements.execute(statement);
 			List<String> columns = statement.getColumns();
-			if(results.isEmpty()) {
-				marker.use(NONE).render();
-			} else {
-				marker.use(SHOW)
-					.with("statement", statement)
-					.with("result", results)
-					.with("columns", columns)
-					.render();
-			}
+			renderResponse(statement, results, columns);
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}
-		response.setContentType("text/html");
+	}
+
+	private void renderResponse(Statement statement, List<Object[]> results,
+			List<String> columns) throws IOException, TemplateException {
+		if(results.isEmpty()) {
+			marker.use(NONE).render();
+		} else {
+			marker.use(SHOW)
+				.with("statement", statement)
+				.with("result", results)
+				.with("columns", columns)
+				.render();
+		}
 	}
 	
 	
@@ -86,17 +85,7 @@ public class StatementController {
 		validateStatement(statement);
 		List<Object[]> results = statements.execute(statement);
 		List<String> columns = statement.getColumns();
-		if(results.isEmpty()) {
-			marker.use(NONE).render();
-		} else {
-			marker.use(SHOW)
-				.with("statement", statement)
-				.with("result", results)
-				.with("columns", columns)
-				.render();
-		}
-		response.setContentType("text/html");
-		
+		renderResponse(statement, results, columns);
 	}
 	
 
@@ -110,7 +99,6 @@ public class StatementController {
 		validateStatement(statement);
 		statements.save(statement);
 		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword());
-		response.setContentType("text/html");
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -128,7 +116,6 @@ public class StatementController {
 		validateStatement(loaded);
 		statements.merge(loaded);
 		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
-		response.setContentType("text/html");
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -136,7 +123,6 @@ public class StatementController {
 	public void delete(Statement statement) {
 		statements.delete(statement);
 		result.nothing();
-		response.setContentType("text/html");
 	}
 
 	private void validateStatement(Statement statement) throws IOException, TemplateException {
