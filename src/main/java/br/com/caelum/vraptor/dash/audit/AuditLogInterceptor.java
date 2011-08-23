@@ -39,10 +39,11 @@ public class AuditLogInterceptor implements Interceptor {
 						BaseURIStatInterceptor.userKey(container),
 						request.getRemoteAddr(), request.getRemoteHost(),
 						request.getHeader("X_FORWARDED_FOR")));
-				Audit audit = method.getMethod().getAnnotation(Audit.class);
-				for (String value : audit.value()) {
-					builder.append(value + "->" + request.getParameter(value)
-							+ "\n");
+				if("GET".equalsIgnoreCase(request.getMethod())) {
+					Audit audit = method.getMethod().getAnnotation(Audit.class);
+					for (String value : audit.value()) {
+						builder.append("{"+value + "->" + request.getParameter(value)+"}");
+					}
 				}
 				LOG.info(builder.toString());
 			}

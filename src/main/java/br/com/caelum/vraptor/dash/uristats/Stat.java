@@ -75,6 +75,10 @@ public class Stat {
 	private static final Logger LOG = LoggerFactory.getLogger(Stat.class);
 
 	public void log() {
-		LOG.debug(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri, queryString));
+		if("GET".equalsIgnoreCase(method)) {
+			LOG.debug(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri, queryString));
+		}else{
+			LOG.debug(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri));
+		}
 	}
 }
