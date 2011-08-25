@@ -42,11 +42,10 @@ public class BaseURIStatInterceptor implements Interceptor {
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object instance) throws InterceptionException {
 		
+		long before = System.currentTimeMillis();
+		stack.next(method, instance);
+
 		try {
-			
-		
-			long before = System.currentTimeMillis();
-			stack.next(method, instance);
 			long time = System.currentTimeMillis() - before;
 	
 			String key = userKey(container);
@@ -84,14 +83,10 @@ public class BaseURIStatInterceptor implements Interceptor {
 					etag, status, hadEtag,
 					cacheControl, size);
 			
-			try {
-				saveStat(stat);
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			}
+			saveStat(stat);
 			
 		} catch (Exception ex) {
-			LOG.error("error:", ex);
+			LOG.error("Unable to prepare stat to save:", ex);
 		}
 	}
 
