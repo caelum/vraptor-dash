@@ -76,7 +76,7 @@ public class BaseURIStatInterceptor implements Interceptor {
 				}
 			}
 			
-			String queryString = extractQueryString();
+			String queryString = extractQueryString(methodName);
 			
 			Stat stat = new Stat(key, request.getRequestURI(), queryString, time,
 					request.getMethod(), resource, methodName,
@@ -90,7 +90,10 @@ public class BaseURIStatInterceptor implements Interceptor {
 		}
 	}
 
-	private String extractQueryString() {
+	private String extractQueryString(String method) {
+		// security, do not log parameters on passwords and so on
+		if(!method.equalsIgnoreCase("GET")) return "";
+		
 		String queryString = "";
 		Enumeration<String> paramNames = request.getParameterNames();
 		boolean hadParameter = false;
