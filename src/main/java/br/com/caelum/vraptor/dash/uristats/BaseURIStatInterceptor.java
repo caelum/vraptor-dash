@@ -76,7 +76,7 @@ public class BaseURIStatInterceptor implements Interceptor {
 				}
 			}
 			
-			String queryString = extractQueryString(methodName);
+			String queryString = extractQueryString(request.getMethod());
 			
 			Stat stat = new Stat(key, request.getRequestURI(), queryString, time,
 					request.getMethod(), resource, methodName,
