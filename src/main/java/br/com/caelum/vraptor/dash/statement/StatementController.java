@@ -41,12 +41,15 @@ public class StatementController {
 
 	@Path("/dash/statements")
 	@Get
-	public void index() throws IOException, TemplateException {
+	public void index(Integer size) throws IOException, TemplateException {
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
-		marker.use(INDEX).with("statements", statements.all()).render();
+		if(size == null) {
+			size = 100;
+		}
+		marker.use(INDEX).with("statements", statements.all(size)).with("size", size).render();
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -130,7 +133,7 @@ public class StatementController {
 			statement.validate(statements,parameters);
 		} catch (IllegalArgumentException e) {
 			validator.add(new ValidationMessage("invalid_hql", "invalid_hql", e.getCause().getMessage()));
-			validator.onErrorUse(Results.logic()).forwardTo(getClass()).index();
+			validator.onErrorUse(Results.logic()).forwardTo(getClass()).index(null);
 		}
 	}
 }
