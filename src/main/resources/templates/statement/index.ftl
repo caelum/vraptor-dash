@@ -31,6 +31,12 @@
 	<br/>
 	<fieldset style="padding: 4px; float:left; width:100%" class="fieldsetChique">
 		<legend id="meusStmts" style="cursor: pointer">All statements</legend>
+		<div style="padding-top:3px; clear:left">
+			<form id="resultsSize" action='statements'>
+				<input type="text" id="stmtListSize" name="size" value="${size}" />
+				<input type="submit" id="submitSize" value="List statements" />	
+			</form>
+		</div>
 		<table id="statements" class="tabela" >
 			<thead>
 				<tr class="even">

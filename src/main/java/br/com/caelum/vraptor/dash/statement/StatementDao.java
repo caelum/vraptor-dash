@@ -12,7 +12,7 @@ import br.com.caelum.vraptor.ioc.Component;
 public class StatementDao {
 
 	private final Session session;
-
+	
 	public StatementDao(Session session) {
 		this.session = session;
 	}
@@ -57,8 +57,8 @@ public class StatementDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Statement> all() {
-		return createQuery("from DashStatement",null).setCacheable(true).setMaxResults(100).list();
+	public List<Statement> all(Integer size) {
+		return createQuery("from DashStatement",null).setCacheable(true).setMaxResults(size).list();
 	}
 	
 	private Query createQuery(String hql, List<String> parameters) {
