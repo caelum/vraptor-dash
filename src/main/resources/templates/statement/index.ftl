@@ -5,7 +5,7 @@
 <body>
 	<h2 class="pagetitle">Statement</h2>
 	<div style="float:left" class="formulario">
-		<form id="frmStatement" action='/dash/statements/execute' method="post" >
+		<form id="frmStatement" action='statements/execute' method="post" >
 			<div style="float:left; padding: 3px;margin: 2px;" >
 				<label class="strong">Name</label>: &nbsp;
 				<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>

@@ -71,7 +71,7 @@ public class StatementDao {
 			}
 		}
 		
-		return query.setMaxResults(100);
+		return query.setMaxResults(1000);
 	}
 
 }
