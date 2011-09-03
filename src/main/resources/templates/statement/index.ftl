@@ -84,7 +84,7 @@
 		$(function() {
 			$(".remove_stmt").click(function() {
 				if(confirm("do you really want to delete it?")){
-					var stmtId = $(this).data('stmtid');
+					var stmtId = $(this).attr('data-stmtid');
 					$.ajax({
 						url:'statements/'+ stmtId,
 						type:'DELETE',
