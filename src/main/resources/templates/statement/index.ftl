@@ -5,12 +5,14 @@
 <body>
 	<h2 class="pagetitle">Statement</h2>
 	<div style="float:left" class="formulario">
-		<form id="frmStatement" action='statements/execute' method="post" >
+		<form id="frmStatement" action='statements/execute' method="get" >
 			<div style="float:left; padding: 3px;margin: 2px;" >
 				<label class="strong">Name</label>: &nbsp;
 				<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>
 				<label class="strong">Password</label>: &nbsp;
 				<input id="passwordStmt" type="password" name="statement.password" value=""/><br/><br/>
+				<label class="strong">Max results</label>: &nbsp;
+				<input id="size" type="text" name="maxResults" value="100"/><br/><br/>
 				
 				<div id="query">
 					<textarea id="hqlToExecute" style="width: 600px; height: 200px" name="statement.hql"></textarea>
@@ -100,7 +102,7 @@
 			});
 			
 			$('#create').click(function(){
-				$('#frmStatement').attr('action','statements').submit();
+				$('#frmStatement').attr('action','statements').attr('method','post').submit();
 			});
 			
 			

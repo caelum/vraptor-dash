@@ -110,11 +110,19 @@
 	</div>
 	<br/>
 	<br/>
-	<div>
-	<label class="strong">Hql:</label>
-	<textarea>${statement.hql}</textarea>
+	<div style="padding-top:3px; clear:left">
+		<form id="resultsSize" action='${statement.id}'>
+			<label class="strong">Name:</label>
+			<input type="text" name="statement.name" value="${statement.name}"/>
+			<br/>
+			<label class="strong">Hql:</label>
+			<textarea name="statement.hql">${statement.hql}</textarea>
+			<br/>
+			<label for="stmtListSize">Max results: </label>
+			<input type="text" id="stmtListSize" name="maxResults" value="${maxResults}" />
+			<input type="submit" id="submitSize" value="Execute" />	
+		</form>
 	</div>
-	<br/>
 	<table id="result">
 	<tr>
 	<#list columns as column>

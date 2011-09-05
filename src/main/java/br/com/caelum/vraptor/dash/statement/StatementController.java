@@ -52,23 +52,26 @@ public class StatementController {
 		marker.use(INDEX).with("statements", statements.all(size)).with("size", size).render();
 	}
 
-	@Path("/dash/statements/{statement.id}")
+	@Path(value="/dash/statements/{statement.id}", priority=Path.LOW)
 	@Get
-	public void show(Statement statement, String password) throws IOException, TemplateException {
+	public void show(Statement statement, String password, Integer maxResults) throws IOException, TemplateException {
 		statement = statements.load(statement.getId());
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
+			if(maxResults == null) {
+				maxResults = 100;
+			}
 			validateStatement(statement,null);
-			List<Object[]> results = statements.execute(statement,null);
+			List<Object[]> results = statements.execute(statement,null,maxResults);
 			List<String> columns = statement.getColumns();
-			renderResponse(statement, results, columns);
+			renderResponse(statement, results, columns, maxResults);
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}
 	}
 
 	private void renderResponse(Statement statement, List<Object[]> results,
-			List<String> columns) throws IOException, TemplateException {
+			List<String> columns, Integer maxResults) throws IOException, TemplateException {
 		if(results.isEmpty()) {
 			marker.use(NONE).render();
 		} else {
@@ -76,32 +79,38 @@ public class StatementController {
 				.with("statement", statement)
 				.with("result", results)
 				.with("columns", columns)
+				.with("maxResults", maxResults)
 				.render();
 		}
 	}
 	
 	
-	@Path("/dash/statements/execute")
-	@Post
-	public void execute(Statement statement, List<String> parameters) throws IOException, TemplateException {
+	@Path(value="/dash/statements/execute", priority=Path.HIGH)
+	@Get
+	public void execute(Statement statement, List<String> parameters, Integer maxResults) throws IOException, TemplateException {
+		
+		if(maxResults == null) {
+			maxResults = 100;
+		}
 		
 		validateStatement(statement,parameters);
-		List<Object[]> results = statements.execute(statement,parameters);
+		List<Object[]> results = statements.execute(statement,parameters,maxResults);
 		List<String> columns = statement.getColumns();
-		renderResponse(statement, results, columns);
+		statement.setId("execute");
+		renderResponse(statement, results, columns, maxResults);
 	}
 	
 
 	@Path("/dash/statements")
 	@Post
-	public void create(Statement statement) throws IOException, TemplateException {
+	public void create(Statement statement, Integer maxResults) throws IOException, TemplateException {
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
 		}
 		validateStatement(statement,null);
 		statements.save(statement);
-		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword());
+		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword(), maxResults);
 	}
 
 	@Path("/dash/statements/{statement.id}")
@@ -118,7 +127,7 @@ public class StatementController {
 		loaded.setPassword(statement.getPassword());
 		validateStatement(loaded,null);
 		statements.merge(loaded);
-		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword());
+		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword(),null);
 	}
 
 	@Path("/dash/statements/{statement.id}")

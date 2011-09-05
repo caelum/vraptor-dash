@@ -22,7 +22,7 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 
 	@Test
 	public void returnsAnEmptyListForAStatementWithoutResults() throws Exception {
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"), null);
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"), null,1000);
 		assertEquals(0, result.size());
 	}
 
@@ -32,7 +32,7 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		session.save(new Statement("first", "from First"));
 		session.save(new Statement("second", "from Second"));
 		tx.commit();
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"),null);
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name from DashStatement"),null,1000);
 
 		assertEquals(2, result.size());
 		assertEquals(1, result.get(0).length);
@@ -47,7 +47,7 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		session.save(new Statement("first", "from First"));
 		session.save(new Statement("second", "from Second"));
 		tx.commit();
-		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"), null);
+		List<Object[]> result = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"), null,1000);
 
 		assertEquals(2, result.size());
 		assertEquals(2, result.get(0).length);
@@ -58,14 +58,18 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		assertEquals("from Second", result.get(1)[1]);
 	}
 	
-	@Test
-	public void shouldOnlyReturn1000Itens() {
+	private void createStatements(Integer size) {
 		Transaction tx = session.beginTransaction();
-		for (int i = 1 ; i <= 1010; i++) {
+		for (int i = 1 ; i <= size; i++) {
 			session.save(new Statement("" + i, "from First"));
 		}
 		tx.commit();
-		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"), null);
+	}
+	
+	@Test
+	public void shouldOnlyReturn1000ItensWhenIsRequested() {
+		createStatements(1010);
+		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement"), null, 1000);
 		assertEquals(1000, results.size());
 	}
 	
@@ -76,7 +80,7 @@ public class StatementDaoTest extends DatabaseIntegrationTest{
 		session.save(new Statement("last", "from Last"));
 		tx.commit();
 		
-		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement where name = ?"), Arrays.<String>asList("first"));
+		List<Object[]> results = new StatementDao(session).execute(new Statement("statements", "select name, hql from DashStatement where name = ?"), Arrays.<String>asList("first"),1000);
 		assertEquals(1,results.size());
 		assertEquals("first",results.get(0)[0]);
 		assertEquals("from First",results.get(0)[1]);
