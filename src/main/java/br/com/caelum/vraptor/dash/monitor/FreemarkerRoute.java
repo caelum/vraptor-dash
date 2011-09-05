@@ -7,12 +7,12 @@ import br.com.caelum.vraptor.http.route.Route;
 import br.com.caelum.vraptor.resource.HttpMethod;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
-public class FreeMakerRoute {
+public class FreemarkerRoute {
 
 	private final Route route ;
 	private final MutableRequest request;
 
-	public FreeMakerRoute(Route route, MutableRequest request) {
+	public FreemarkerRoute(Route route, MutableRequest request) {
 		this.route = route;
 		this.request = request;
 	}
