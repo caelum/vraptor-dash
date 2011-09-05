@@ -14,14 +14,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
-import br.com.caelum.vraptor.http.MutableRequest;
 import br.com.caelum.vraptor.http.route.Router;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RoutesControllerTest {
 
 	private @Mock Router router;
-	private @Mock MutableRequest request;
 	private @Mock Freemarker marker;
 	private @Mock Template indexTemplate;
 	private @Mock Environment environment;
@@ -30,7 +28,7 @@ public class RoutesControllerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.controller = new RoutesController(router, request, marker, environment);
+		this.controller = new RoutesController(router, marker, environment);
 
 		when(marker.use("routes/index")).thenReturn(indexTemplate);
 		when(indexTemplate.with(anyString(), any())).thenReturn(indexTemplate);

@@ -11,7 +11,6 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.freemarker.Freemarker;
-import br.com.caelum.vraptor.http.MutableRequest;
 import br.com.caelum.vraptor.http.route.Route;
 import br.com.caelum.vraptor.http.route.Router;
 import freemarker.template.TemplateException;
@@ -24,12 +23,10 @@ public class RoutesController {
 
 	private final Router router;
 	private final Freemarker marker;
-	private final MutableRequest request;
 	private final Environment environment;
 
-	public RoutesController(Router router, MutableRequest request, Freemarker marker, Environment environment) {
+	public RoutesController(Router router, Freemarker marker, Environment environment) {
 		this.router = router;
-		this.request = request;
 		this.marker = marker;
 		this.environment = environment;
 	}
@@ -48,7 +45,7 @@ public class RoutesController {
 	private List<FreemarkerRoute> createRoutesForFreeMarker(List<Route> routes) {
 		List<FreemarkerRoute> freemakerRoutes = new ArrayList<FreemarkerRoute>();
 		for (Route route : routes) {
-			freemakerRoutes.add(new FreemarkerRoute(route, this.request));
+			freemakerRoutes.add(new FreemarkerRoute(route));
 		}
 		return freemakerRoutes;
 	}
