@@ -52,7 +52,7 @@ public class StatementController {
 		marker.use(INDEX).with("statements", statements.all(size)).with("size", size).render();
 	}
 
-	@Path(value="/dash/statements/{statement.id}", priority=Path.LOW)
+	@Path("/dash/statements/{statement.id}")
 	@Get
 	public void show(Statement statement, String password, Integer maxResults) throws IOException, TemplateException {
 		statement = statements.load(statement.getId());
@@ -85,8 +85,8 @@ public class StatementController {
 	}
 	
 	
-	@Path(value="/dash/statements/execute", priority=Path.HIGH)
-	@Get
+	@Path("/dash/statements/execute")
+	@Post
 	public void execute(Statement statement, List<String> parameters, Integer maxResults) throws IOException, TemplateException {
 		
 		if(maxResults == null) {
@@ -96,7 +96,6 @@ public class StatementController {
 		validateStatement(statement,parameters);
 		List<Object[]> results = statements.execute(statement,parameters,maxResults);
 		List<String> columns = statement.getColumns();
-		statement.setId("execute");
 		renderResponse(statement, results, columns, maxResults);
 	}
 	

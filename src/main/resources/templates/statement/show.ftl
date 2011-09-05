@@ -111,7 +111,11 @@
 	<br/>
 	<br/>
 	<div style="padding-top:3px; clear:left">
-		<form id="resultsSize" action='${statement.id}'>
+		<#if statement.id??>
+			<form id="resultsSize" action='${statement.id}'>
+		<#else>
+			<form id="resultsSize" action="execute" method="post">
+		</#if>
 			<label class="strong">Name:</label>
 			<input type="text" name="statement.name" value="${statement.name}"/>
 			<br/>

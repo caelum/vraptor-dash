@@ -5,7 +5,7 @@
 <body>
 	<h2 class="pagetitle">Statement</h2>
 	<div style="float:left" class="formulario">
-		<form id="frmStatement" action='statements/execute' method="get" >
+		<form id="frmStatement" action='statements/execute' method="post" >
 			<div style="float:left; padding: 3px;margin: 2px;" >
 				<label class="strong">Name</label>: &nbsp;
 				<input id="assuntoStmt" type="text" name="statement.name" value=""/><br/><br/>
@@ -102,7 +102,7 @@
 			});
 			
 			$('#create').click(function(){
-				$('#frmStatement').attr('action','statements').attr('method','post').submit();
+				$('#frmStatement').attr('action','statements').submit();
 			});
 			
 			
