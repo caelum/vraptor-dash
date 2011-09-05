@@ -1,8 +1,10 @@
 package br.com.caelum.vraptor.dash.monitor;
 
+import java.lang.reflect.Field;
 import java.util.EnumSet;
 
-import br.com.caelum.vraptor.http.MutableRequest;
+import net.vidageek.mirror.dsl.Mirror;
+import br.com.caelum.vraptor.http.route.FixedMethodStrategy;
 import br.com.caelum.vraptor.http.route.Route;
 import br.com.caelum.vraptor.resource.HttpMethod;
 import br.com.caelum.vraptor.resource.ResourceMethod;
@@ -10,54 +12,56 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
 public class FreemarkerRoute {
 
 	private final Route route ;
-	private final MutableRequest request;
 
-	public FreemarkerRoute(Route route, MutableRequest request) {
+	public FreemarkerRoute(Route route) {
 		this.route = route;
-		this.request = request;
 	}
 
 	public String getAllowedMethods() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[");
-		
+
 		if(routeSupportsAllHttpMethods(this.route)) {
 			builder.append("ALL");
 		} else {
 			builder.append(httpMethodsToString(this.route.allowedMethods()));
 		}
-		
+
 		builder.append("]");
 		return builder.toString();
 	}
 
 
 	public String getControllerAndMethodName() {
-		ResourceMethod resourceMethod = route.resourceMethod(this.request, this.route.getOriginalUri());
-		String controllerName = resourceMethod.getResource().getType().getSimpleName();
-		String methodName = resourceMethod.getMethod().getName();
-		return controllerName + "." + methodName;
+		Field resourceMethodField = new Mirror().on(FixedMethodStrategy.class).reflect().field("resourceMethod");
+		resourceMethodField.setAccessible(true);
+		try {
+			ResourceMethod resourceMethod = (ResourceMethod) resourceMethodField.get(route);
+			return resourceMethod.getMethod().toString();
+		} catch (Exception e) {
+			return "Unknown: " + e.getMessage();
+		}
 	}
 
 	public String getOriginalUri() {
 		return route.getOriginalUri();
 	}
-	
-	
+
+
 	private void deleteLastCharFrom(StringBuilder builder) {
-		builder.deleteCharAt(builder.length() - 1);		
+		builder.deleteCharAt(builder.length() - 1);
 	}
-	
+
 	private String httpMethodsToString(EnumSet<HttpMethod> httpMethods) {
 		StringBuilder builder = new StringBuilder();
 		for (HttpMethod httpMethod : httpMethods) {
 			builder.append(httpMethod.name());
 			builder.append(" ");
-		}		
+		}
 		deleteLastCharFrom(builder);
 		return builder.toString();
 	}
-	
+
 	private boolean routeSupportsAllHttpMethods(Route route) {
 		return route.allowedMethods().size() == HttpMethod.values().length;
 	}
