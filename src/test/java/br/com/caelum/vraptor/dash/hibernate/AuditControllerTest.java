@@ -49,4 +49,11 @@ public class AuditControllerTest {
 		verify(controlPanel).with("secondLevelCacheMissCount", "2");
 	}
 
+	@Test
+	public void shouldIncludeHibernateStatistictSecondLevelCacheHitCount() throws IOException, TemplateException {
+		when(statistics.getSecondLevelCacheHitCount()).thenReturn(3L);
+		new AuditController(session , new MockResult(), marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
+		verify(controlPanel).with("secondLevelCacheHitCount", "3");
+	}
+
 }

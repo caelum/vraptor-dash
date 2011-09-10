@@ -20,6 +20,7 @@ public class HibernateStatisticsCollector {
 	public void collect(Template template) {
 		template.with("connectionCount", decimalFormat.format(statistics.getConnectCount()));
 		template.with("secondLevelCacheMissCount", decimalFormat.format(statistics.getSecondLevelCacheMissCount()));
+		template.with("secondLevelCacheHitCount", decimalFormat.format(statistics.getSecondLevelCacheHitCount()));
 	}
 
 }
