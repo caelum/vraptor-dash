@@ -1,6 +1,5 @@
 package br.com.caelum.vraptor.dash.hibernate;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -54,6 +53,13 @@ public class AuditControllerTest {
 		when(statistics.getSecondLevelCacheHitCount()).thenReturn(3L);
 		new AuditController(session , new MockResult(), marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("secondLevelCacheHitCount", "3");
+	}
+
+	@Test
+	public void shouldIncludeHibernateStatistictSecondLevelCachePutCount() throws IOException, TemplateException {
+		when(statistics.getSecondLevelCachePutCount()).thenReturn(4L);
+		new AuditController(session , new MockResult(), marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
+		verify(controlPanel).with("secondLevelCachePutCount", "4");
 	}
 
 }

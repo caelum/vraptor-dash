@@ -61,8 +61,6 @@ public class AuditController {
 		Template controlPanel = marker.use(CONTROL_PANEL);
 		extractConnectionCount(decimalFormat, statistics, controlPanel);
 		
-		controlPanel.with("secondLevelCachePutCount", decimalFormat.format(statistics.getSecondLevelCachePutCount()));
-		
 		Runtime runtime = Runtime.getRuntime();
 		
 		
