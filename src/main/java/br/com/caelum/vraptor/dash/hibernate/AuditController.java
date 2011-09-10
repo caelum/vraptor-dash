@@ -59,7 +59,7 @@ public class AuditController {
 
 		Statistics statistics = session.getSessionFactory().getStatistics();
 		Template controlPanel = marker.use(CONTROL_PANEL);
-		controlPanel.with("connectionCount", decimalFormat.format(statistics.getConnectCount()));
+		extractConnectionCount(decimalFormat, statistics, controlPanel);
 		
 		controlPanel.with("secondLevelCacheMissCount", decimalFormat.format(statistics.getSecondLevelCacheMissCount()));
 		controlPanel.with("secondLevelCacheHitCount", decimalFormat.format(statistics.getSecondLevelCacheHitCount()));
@@ -141,6 +141,11 @@ public class AuditController {
 		includeMethodInvocationReturnInResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers", controlPanel);
 		includeMethodInvocationReturnInResult("numUserPools", c3p0PooledDataSource, "getNumUserPools", controlPanel);
 		controlPanel.render();
+	}
+
+	void extractConnectionCount(NumberFormat decimalFormat,
+			Statistics statistics, Template controlPanel) {
+		controlPanel.with("connectionCount", decimalFormat.format(statistics.getConnectCount()));
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
