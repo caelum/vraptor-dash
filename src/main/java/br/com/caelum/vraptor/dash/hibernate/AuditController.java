@@ -145,7 +145,8 @@ public class AuditController {
 
 	void extractConnectionCount(NumberFormat decimalFormat,
 			Statistics statistics, Template controlPanel) {
-		controlPanel.with("connectionCount", decimalFormat.format(statistics.getConnectCount()));
+		new HibernateStatisticsCollector(statistics).collect(controlPanel);
+		
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
