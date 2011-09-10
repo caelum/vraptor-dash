@@ -3,13 +3,16 @@ package br.com.caelum.vraptor.dash.hibernate;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
 import java.text.NumberFormat;
 
 import org.hibernate.Session;
 import org.hibernate.stat.Statistics;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
@@ -18,12 +21,22 @@ import freemarker.template.TemplateException;
 
 public class AuditControllerTest {
 
+	@Mock
+	private Freemarker marker;
+	@Mock
+	private Template controlPanel;
+	@Mock
+	private Session session;
+	@Mock
+	private Statistics statistics;
+	
+	@Before
+	public void setup() {
+		initMocks(this);
+	}
+	
 	@Test
 	public void shouldIncludeHibernateStatisticConnectionCount() throws IOException, TemplateException {
-		Freemarker marker = mock(Freemarker.class);
-		Template controlPanel = mock(Template.class);
-		Session session = mock(Session.class);
-		Statistics statistics = mock(Statistics.class);
 		when(statistics.getConnectCount()).thenReturn(1L);
 		new AuditController(session , new MockResult(), marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("connectionCount", "1");
@@ -31,10 +44,6 @@ public class AuditControllerTest {
 
 	@Test
 	public void shouldIncludeHibernateStatisticSecondLevelCacheMissCount() throws IOException, TemplateException {
-		Freemarker marker = mock(Freemarker.class);
-		Template controlPanel = mock(Template.class);
-		Session session = mock(Session.class);
-		Statistics statistics = mock(Statistics.class);
 		when(statistics.getSecondLevelCacheMissCount()).thenReturn(2L);
 		new AuditController(session , new MockResult(), marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("secondLevelCacheMissCount", "2");
