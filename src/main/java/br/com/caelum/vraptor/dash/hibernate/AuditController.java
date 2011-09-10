@@ -61,7 +61,7 @@ public class AuditController {
 		Template controlPanel = marker.use(CONTROL_PANEL);
 		extractConnectionCount(decimalFormat, statistics, controlPanel);
 		
-		controlPanel.with("secondLevelCacheMissCount", decimalFormat.format(statistics.getSecondLevelCacheMissCount()));
+		
 		controlPanel.with("secondLevelCacheHitCount", decimalFormat.format(statistics.getSecondLevelCacheHitCount()));
 		controlPanel.with("secondLevelCachePutCount", decimalFormat.format(statistics.getSecondLevelCachePutCount()));
 		
