@@ -59,11 +59,7 @@ public class AuditController {
 
 		Statistics statistics = session.getSessionFactory().getStatistics();
 		Template controlPanel = marker.use(CONTROL_PANEL);
-		controlPanel.with("connectionCount", decimalFormat.format(statistics.getConnectCount()));
-		
-		controlPanel.with("secondLevelCacheMissCount", decimalFormat.format(statistics.getSecondLevelCacheMissCount()));
-		controlPanel.with("secondLevelCacheHitCount", decimalFormat.format(statistics.getSecondLevelCacheHitCount()));
-		controlPanel.with("secondLevelCachePutCount", decimalFormat.format(statistics.getSecondLevelCachePutCount()));
+		extractConnectionCount(decimalFormat, statistics, controlPanel);
 		
 		Runtime runtime = Runtime.getRuntime();
 		
@@ -141,6 +137,12 @@ public class AuditController {
 		includeMethodInvocationReturnInResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers", controlPanel);
 		includeMethodInvocationReturnInResult("numUserPools", c3p0PooledDataSource, "getNumUserPools", controlPanel);
 		controlPanel.render();
+	}
+
+	void extractConnectionCount(NumberFormat decimalFormat,
+			Statistics statistics, Template controlPanel) {
+		new HibernateStatisticsCollector(statistics).collect(controlPanel);
+		
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
