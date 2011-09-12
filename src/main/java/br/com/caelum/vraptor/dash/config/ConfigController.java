@@ -36,7 +36,7 @@ public class ConfigController {
 
 	@SuppressWarnings("unchecked")
 	private List<UserConfig> all(String key) {
-		Query all = session.createQuery("from DashUserConfig where user = :id and key like :key").setCacheable(true);
+		Query all = session.createQuery("from DashUserConfig where userId = :id and key like :key").setCacheable(true);
 		all.setParameter("id", currentUser.getId());
 		all.setParameter("key", key);
 		return all.list();
