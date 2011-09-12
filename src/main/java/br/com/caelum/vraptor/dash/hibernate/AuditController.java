@@ -19,7 +19,6 @@ import org.hibernate.stat.Statistics;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
-import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.hibernate.stats.CacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.CollectionStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityCacheStatsWrapper;
@@ -39,23 +38,14 @@ public class AuditController {
 
 	private static final String CONTROL_PANEL = "audit/controlPanel";
 	private final Session session;
-	private final Result result;
-	private Freemarker marker;
+	private final Freemarker marker;
 
-	public AuditController(Session session, Result result, Freemarker marker) {
+	public AuditController(Session session, Freemarker marker) {
 		this.session = session;
-		this.result = result;
 		this.marker = marker;
 	}
 
-	@Path("/auditoria/estatisticas")
-	public void listStats() throws IOException {
-		session.getSessionFactory().getStatistics();
-
-		result.forwardTo("");
-	}
-	
-	@Path("/auditoria/painelDeControle") @Get
+	@Path("/dash/controlPanel") @Get
 	public void controlPanel() throws IOException, TemplateException {
 		NumberFormat decimalFormat = NumberFormat.getNumberInstance();
 		decimalFormat.setGroupingUsed(true);
@@ -72,7 +62,7 @@ public class AuditController {
 		controlPanel.with("maxPoolSize", c3p0PooledDataSource.getMaxPoolSize());
 		controlPanel.with("initPoolSize", c3p0PooledDataSource.getInitialPoolSize());
 		controlPanel.with("minPoolSize", c3p0PooledDataSource.getMinPoolSize());
-		
+
 		String[] queries = statistics.getQueries();
 		List<QueryStatsWrapper> queryStatsList = new ArrayList<QueryStatsWrapper>();
 		for (String query : queries) {
@@ -80,17 +70,17 @@ public class AuditController {
 			queryStatsList.add(new QueryStatsWrapper(query, queryStats));
 		}
 		controlPanel.with("queryStatsList", queryStatsList);
-		
+
 		String[] entityNames = statistics.getEntityNames();
 		Map<String, EntityCacheStatsWrapper> entityCacheStats = new HashMap<String, EntityCacheStatsWrapper>();
-		
+
 		for (String entityName : entityNames) {
 			EntityStatistics entityStatistics = statistics.getEntityStatistics(entityName);
 			EntityCacheStatsWrapper entityCacheStatsWrapper = new EntityCacheStatsWrapper();
 			entityCacheStatsWrapper.setEntityStatsWrapper(new EntityStatsWrapper(entityName, entityStatistics));
 			entityCacheStats.put(entityName, entityCacheStatsWrapper);
 		}
-		
+
 		for (String regionName : statistics.getSecondLevelCacheRegionNames()) {
 			CacheStatsWrapper cacheStatsWrapper = new CacheStatsWrapper(regionName, statistics.getSecondLevelCacheStatistics(regionName));
 			if(entityCacheStats.containsKey(regionName)){
@@ -104,16 +94,16 @@ public class AuditController {
 				entityCacheStats.put(regionName, entityCacheStatsWrapper);
 			}
 		}
-		
+
 		controlPanel.with("entityCacheStats", entityCacheStats);
-		
-		
+
+
 		List<CollectionStatsWrapper> collectionsStatsList = new ArrayList<CollectionStatsWrapper>();
 		for (String collectionRoleName : statistics.getCollectionRoleNames()) {
 			collectionsStatsList.add(new CollectionStatsWrapper(collectionRoleName, statistics));
 		}
 		controlPanel.with("collectionsStatsList", collectionsStatsList);
-		
+
 		List<net.sf.ehcache.Statistics> collectionsCacheStatsList = new ArrayList<net.sf.ehcache.Statistics>();
 		List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
 		for (CacheManager cacheManager : allCacheManagers) {
@@ -122,7 +112,7 @@ public class AuditController {
 			}
 		}
 		controlPanel.with("ehCacheStatsList", collectionsCacheStatsList);
-		
+
 		includeMethodInvocationReturnInResult("numBusyCon", c3p0PooledDataSource, "getNumBusyConnectionsAllUsers", controlPanel);
 		includeMethodInvocationReturnInResult("numCon", c3p0PooledDataSource, "getNumConnectionsAllUsers", controlPanel);
 		includeMethodInvocationReturnInResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers", controlPanel);
@@ -133,13 +123,13 @@ public class AuditController {
 	void collectStatistics(Template controlPanel, Collectors collectors) {
 		collectors.collect(controlPanel);
 	}
-	
+
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
 		try {
 			Object toBeIncluded = new Mirror().on(obj).invoke().method(methodName).withoutArgs();
-			result.include(name, toBeIncluded);
+			controlPanel.with(name, toBeIncluded);
 		} catch (Exception e) {
-			result.include(name, "not found");
+			controlPanel.with(name, "not found");
 		}
 	}
 }
