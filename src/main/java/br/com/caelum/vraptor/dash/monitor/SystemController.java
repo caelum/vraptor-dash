@@ -11,7 +11,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.audit.Audit;
@@ -37,7 +37,7 @@ public class SystemController {
 		this.result = result;
 	}
 
-	@Path("/dash/system_properties")
+	@Get("/dash/system_properties")
 	public InputStreamDownload properties() throws IOException {
 		StringBuilder sb = new StringBuilder();
 
@@ -50,7 +50,7 @@ public class SystemController {
 		return new InputStreamDownload(new ByteArrayInputStream(sb.toString().getBytes()), "text/plain", "log.log");
 	}
 
-	@Path("/dash/log/{name}")
+	@Get("/dash/log/{name}")
 	@Audit
 	public InputStreamDownload log(String name) throws IOException {
 		File file = new File(name);
@@ -61,13 +61,19 @@ public class SystemController {
 		}
 		log.info("accessing file: " + file.getCanonicalPath	());
 		if (!file.exists()) {
-			throw new IllegalStateException("file not found");	
+			throw new IllegalStateException("file not found");
 		}
 		return new InputStreamDownload(new FileInputStream(file), "text/plain", "log.log");
 	}
 
-	@Path("/dash/threads")
+	@Get("/dash/threads")
 	public void threads() throws IOException, TemplateException {
-		marker.use("audit/basicMonitor").render();
+		marker.use("audit/basicMonitor").with("stackTraces", Thread.getAllStackTraces().entrySet()).render();
+	}
+
+	@Get("/dash/threads/stats")
+	public void threadStats() {
+		new BasicMonitor().logStats();
+		result.use(Results.http()).body("Statistics logged").setStatusCode(200);
 	}
 }

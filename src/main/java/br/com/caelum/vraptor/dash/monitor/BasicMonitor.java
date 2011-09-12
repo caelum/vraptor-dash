@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 
 public class BasicMonitor {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BasicMonitor.class);
+	private static final Logger logger = LoggerFactory.getLogger(BasicMonitor.class);
 
-	public static void logStats() {
+	public void logStats() {
 		ThreadMXBean threads = ManagementFactory.getThreadMXBean();
 		MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
 
@@ -24,7 +23,7 @@ public class BasicMonitor {
 						threads.getThreadCount() });
 	}
 
-	private static void checkDeadlocks(ThreadMXBean threads) {
+	private void checkDeadlocks(ThreadMXBean threads) {
 		{
 			long[] ids = threads.findDeadlockedThreads();
 			if (ids != null) {
@@ -48,7 +47,7 @@ public class BasicMonitor {
 
 	}
 
-	private static void logTrace(StackTraceElement[] stackTrace) {
+	private void logTrace(StackTraceElement[] stackTrace) {
 		StringBuilder sb = new StringBuilder();
 		for (StackTraceElement e : stackTrace) {
 			sb.append(e.getClassName() + e.getMethodName() + ":"

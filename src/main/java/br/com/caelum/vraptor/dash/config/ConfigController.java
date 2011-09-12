@@ -14,7 +14,6 @@ import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.uristats.IdeableUser;
 import br.com.caelum.vraptor.freemarker.Freemarker;
-import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
 @Resource
@@ -46,7 +45,7 @@ public class ConfigController {
 	@Post
 	public void create(String key, String value) throws IOException, TemplateException {
 		session.save(new UserConfig(key, value, currentUser.getId().toString()));
-		result.use(HttpResult.class).setStatusCode(200);
+		result.nothing();
 	}
 
 	@Path("/dash/config.js")
