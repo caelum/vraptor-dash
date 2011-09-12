@@ -1,7 +1,7 @@
 <html>
 	<body>
 		<fieldset>
-			<legend>Conex&otilde;es</legend>
+			<legend>Connections</legend>
 			<ul>
 				Connection count: ${connectionCount}
 			</ul>
@@ -61,11 +61,7 @@
 		<fieldset>
 			<legend>Query Statistics</legend>
 			
-			<p>
-				Segure Shift para ordenar por m&uacute;ltiplas colunas
-			</p>
-			
-			<table class="tabela sortable paged" id="queries">
+			<table id="queries">
 			<thead>
 				<tr>
 					<th>Query</th>
@@ -77,16 +73,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				<caelum:forEach items="${queryStatsList}" var="q" varStatus="status">
-					<tr id="query_${status.index}">
+				<#list queryStatsList as q>
+					<tr>
 						<td>${q.query}</td>
-						<td class="stats">${q.executionCount}</td>
-						<td class="stats">${q.executionAvgTime}</td>
-						<td class="stats">${q.cachePutCount}</td>
-						<td class="stats">${q.cacheHitCount}</td>
-						<td class="stats">${q.cacheMissCount}</td>
+						<td>${q.executionCount}</td>
+						<td>${q.executionAvgTime}</td>
+						<td>${q.cachePutCount}</td>
+						<td>${q.cacheHitCount}</td>
+						<td>${q.cacheMissCount}</td>
 					</tr>
-				</caelum:forEach>
+				</#list>
 			</tbody>
 			</table>
 		</fieldset>
@@ -94,11 +90,7 @@
 		<fieldset>
 			<legend>Entity Statistics</legend>
 			
-			<p>
-				Segure Shift para ordenar por m&uacute;ltiplas colunas
-			</p>
-			
-			<table class="tabela sortable paged" id="entities">
+			<table id="entities">
 			<thead>
 				<tr>
 					<th>Entity</th>
@@ -110,16 +102,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				<caelum:forEach items="${entityCacheStats}" var="e" varStatus="status">
-					<tr id="entity_${status.index}">
-						<td>${e.value.name}</td>
-						<td class="stats">${e.value.fetchCount}</td>
-						<td class="stats">${e.value.loadCount}</td>
-						<td class="stats">${e.value.putCount}</td>
-						<td class="stats">${e.value.missCount}</td>
-						<td class="stats">${e.value.hitCount}</td>
+				<#list entityCacheStats?keys as k>
+					<tr>
+						<td>${entityCacheStats[k].name}</td>
+						<td>${entityCacheStats[k].fetchCount}</td>
+						<td>${entityCacheStats[k].loadCount}</td>
+						<td>${entityCacheStats[k].putCount}</td>
+						<td>${entityCacheStats[k].missCount}</td>
+						<td>${entityCacheStats[k].hitCount}</td>
 					</tr>
-				</caelum:forEach>
+				</#list>
 			</tbody>
 			</table>
 		</fieldset>
@@ -127,11 +119,7 @@
 		<fieldset>
 			<legend>Collections Statistics</legend>
 			
-			<p>
-				Segure Shift para ordenar por m&uacute;ltiplas colunas
-			</p>
-			
-			<table class="tabela sortable paged" id="collections">
+			<table id="collections">
 			<thead>
 				<tr>
 					<th>Collection Role Name</th>
@@ -143,16 +131,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				<caelum:forEach items="${collectionsStatsList}" var="e" varStatus="status">
-					<tr id="collections_${status.index}">
+				<#list collectionsStatsList as e>
+					<tr>
 						<td>${e.collectionRoleName}</td>
-						<td class="stats">${e.fetchCount}</td>
-						<td class="stats">${e.loadCount}</td>
-						<td class="stats">${e.putCount}</td>
-						<td class="stats">${e.missCount}</td>
-						<td class="stats">${e.hitCount}</td>
+						<td>${e.fetchCount}</td>
+						<td>${e.loadCount}</td>
+						<td>${e.putCount}</td>
+						<td>${e.missCount}</td>
+						<td>${e.hitCount}</td>
 					</tr>
-				</caelum:forEach>
+				</#list>
 			</tbody>
 			</table>
 		</fieldset>
@@ -160,11 +148,7 @@
 		<fieldset>
 			<legend>EhCache Statistics</legend>
 			
-			<p>
-				Segure Shift para ordenar por m&uacute;ltiplas colunas
-			</p>
-			
-			<table class="tabela sortable paged" id="ehCache">
+			<table id="ehCache">
 			<thead>
 				<tr>
 					<th>Cache Name</th>
@@ -174,14 +158,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				<caelum:forEach items="${ehCacheStatsList}" var="e" varStatus="status">
-					<tr id="ehCache_${status.index}">
+				<#list ehCacheStatsList as e>
+					<tr>
 						<td>${e.associatedCacheName}</td>
-						<td class="stats">${e.cacheHits}</td>
-						<td class="stats">${e.cacheMisses}</td>
-						<td class="stats">${e.objectCount}</td>
+						<td>${e.cacheHits}</td>
+						<td>${e.cacheMisses}</td>
+						<td>${e.objectCount}</td>
 					</tr>
-				</caelum:forEach>
+				</#list>
 			</tbody>
 			</table>
 		</fieldset>
