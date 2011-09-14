@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 
 import org.hibernate.Session;
 import org.hibernate.stat.Statistics;
@@ -67,7 +66,7 @@ public class AuditControllerTest {
 	public void shouldIncludeVmStatisticTotalMemory(){
 		Runtime runtime = mock(Runtime.class);
 		when(runtime.totalMemory()).thenReturn(1L);
-		new AuditController(session , new MockResult(), marker).colectVmStatistics(NumberFormat.getNumberInstance(), controlPanel, runtime);
+		new AuditController(session , new MockResult(), marker).colectVmStatistics(controlPanel, runtime);
 		verify(controlPanel).with("totalMemory", "1");
 	}
 

@@ -2,9 +2,10 @@ package br.com.caelum.vraptor.dash.runtime;
 
 import java.text.NumberFormat;
 
+import br.com.caelum.vraptor.dash.statistics.Collector;
 import br.com.caelum.vraptor.freemarker.Template;
 
-public class RuntimeStatisticsCollector {
+public class RuntimeStatisticsCollector implements Collector {
 
 	private Runtime runtime;
 

@@ -67,7 +67,7 @@ public class AuditController {
 		
 		NumberFormat percentFormat = NumberFormat.getPercentInstance();
 		
-		colectVmStatistics(decimalFormat, controlPanel, runtime);
+		colectVmStatistics(controlPanel, runtime);
 		
 		double usedMemory = runtime.totalMemory() - runtime.freeMemory();
 		controlPanel.with("usedMemory", decimalFormat.format(usedMemory));
@@ -140,7 +140,7 @@ public class AuditController {
 		controlPanel.render();
 	}
 
-	void colectVmStatistics(NumberFormat decimalFormat,	Template controlPanel, Runtime runtime) {
+	void colectVmStatistics(Template controlPanel,	Runtime runtime) {
 		new RuntimeStatisticsCollector(runtime).collect(controlPanel);
 	}
 

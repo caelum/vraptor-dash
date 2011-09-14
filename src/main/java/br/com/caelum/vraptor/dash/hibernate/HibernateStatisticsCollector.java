@@ -4,9 +4,10 @@ import java.text.NumberFormat;
 
 import org.hibernate.stat.Statistics;
 
+import br.com.caelum.vraptor.dash.statistics.Collector;
 import br.com.caelum.vraptor.freemarker.Template;
 
-public class HibernateStatisticsCollector {
+public class HibernateStatisticsCollector implements Collector {
 
 	private NumberFormat decimalFormat;
 	private Statistics statistics;
