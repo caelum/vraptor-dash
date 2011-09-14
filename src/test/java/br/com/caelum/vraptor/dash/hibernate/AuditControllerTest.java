@@ -1,6 +1,5 @@
 package br.com.caelum.vraptor.dash.hibernate;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -69,6 +68,13 @@ public class AuditControllerTest {
 		when(runtime.totalMemory()).thenReturn(1L);
 		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("totalMemory", "1");
+	}
+
+	@Test
+	public void shouldIncludeVmStatisticUsedMemory(){
+		when(runtime.totalMemory()).thenReturn(2L);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
+		verify(controlPanel).with("usedMemory", "2");
 	}
 
 }
