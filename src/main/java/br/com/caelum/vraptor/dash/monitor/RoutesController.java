@@ -9,8 +9,9 @@ import java.util.List;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.environment.Environment;
-import br.com.caelum.vraptor.freemarker.Freemarker;
+import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.http.route.Route;
 import br.com.caelum.vraptor.http.route.Router;
 import freemarker.template.TemplateException;
@@ -22,12 +23,12 @@ public class RoutesController {
 	private static final String INDEX = "routes/index";
 
 	private final Router router;
-	private final Freemarker marker;
 	private final Environment environment;
+	private final Result result;
 
-	public RoutesController(Router router, Freemarker marker, Environment environment) {
+	public RoutesController(Router router, Result result, Environment environment) {
 		this.router = router;
-		this.marker = marker;
+		this.result = result;
 		this.environment = environment;
 	}
 
@@ -38,8 +39,9 @@ public class RoutesController {
 		}
 
 		List<Route> routes = orderRoutesByURI(router.allRoutes());
-		List<FreemarkerRoute> freemakerRoutes = createRoutesForFreeMarker(routes);
-		this.marker.use(INDEX).with("routes", freemakerRoutes).render();
+		List<FreemarkerRoute> freemarkerRoutes = createRoutesForFreeMarker(routes);
+		result.include("routes", freemarkerRoutes);
+		result.use(FreemarkerView.class).withTemplate(INDEX);
 	}
 
 	private List<FreemarkerRoute> createRoutesForFreeMarker(List<Route> routes) {

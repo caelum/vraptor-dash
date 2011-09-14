@@ -17,7 +17,7 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.audit.Audit;
 import br.com.caelum.vraptor.dash.hibernate.AuditController;
 import br.com.caelum.vraptor.environment.Environment;
-import br.com.caelum.vraptor.freemarker.Freemarker;
+import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import freemarker.template.TemplateException;
@@ -27,12 +27,10 @@ public class SystemController {
 
 	public static final String ALLOWED_LOG_REGEX = "br.com.caelum.vraptor.dash.log.allowed";
 	private static Logger log = LoggerFactory.getLogger(AuditController.class);
-	private final Freemarker marker;
 	private final Environment environment;
 	private final Result result;
 
-	public SystemController(Freemarker marker, Environment environment, Result result) {
-		this.marker = marker;
+	public SystemController(Environment environment, Result result) {
 		this.environment = environment;
 		this.result = result;
 	}
@@ -68,7 +66,8 @@ public class SystemController {
 
 	@Get("/dash/threads")
 	public void threads() throws IOException, TemplateException {
-		marker.use("audit/basicMonitor").with("stackTraces", Thread.getAllStackTraces().entrySet()).render();
+		result.include("stackTraces", Thread.getAllStackTraces().entrySet());
+		result.use(FreemarkerView.class).withTemplate("audit/basicMonitor");
 	}
 
 	@Get("/dash/threads/stats")

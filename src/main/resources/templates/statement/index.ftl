@@ -8,8 +8,8 @@
 		<#if errors??>
 			<div id="errors">
 				<ul>
-				<#list errors as error>
-					<li>${error.message}</li>
+				<#list errors.iterator() as error>
+					<li>${error}</li>
 				</#list>
 				</ul>
 			</div>
