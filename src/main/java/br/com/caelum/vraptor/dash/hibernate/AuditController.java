@@ -59,7 +59,7 @@ public class AuditController {
 
 		Statistics statistics = session.getSessionFactory().getStatistics();
 		Template controlPanel = marker.use(CONTROL_PANEL);
-		extractConnectionCount(decimalFormat, statistics, controlPanel);
+		extractConnectionCount(statistics, controlPanel);
 		
 		Runtime runtime = Runtime.getRuntime();
 		
@@ -139,8 +139,7 @@ public class AuditController {
 		controlPanel.render();
 	}
 
-	void extractConnectionCount(NumberFormat decimalFormat,
-			Statistics statistics, Template controlPanel) {
+	void extractConnectionCount(Statistics statistics, Template controlPanel) {
 		new HibernateStatisticsCollector(statistics).collect(controlPanel);
 		
 	}
