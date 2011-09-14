@@ -28,6 +28,8 @@ public class AuditControllerTest {
 	private Session session;
 	@Mock
 	private Statistics statistics;
+	@Mock
+	private Runtime runtime;
 	
 	@Before
 	public void setup() {
@@ -37,36 +39,35 @@ public class AuditControllerTest {
 	@Test
 	public void shouldIncludeHibernateStatisticConnectionCount() throws IOException, TemplateException {
 		when(statistics.getConnectCount()).thenReturn(1L);
-		new AuditController(session , new MockResult(), marker).colectHibernateStatistics(statistics, controlPanel);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("connectionCount", "1");
 	}
 
 	@Test
 	public void shouldIncludeHibernateStatisticSecondLevelCacheMissCount() throws IOException, TemplateException {
 		when(statistics.getSecondLevelCacheMissCount()).thenReturn(2L);
-		new AuditController(session , new MockResult(), marker).colectHibernateStatistics(statistics, controlPanel);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("secondLevelCacheMissCount", "2");
 	}
 
 	@Test
 	public void shouldIncludeHibernateStatistictSecondLevelCacheHitCount() throws IOException, TemplateException {
 		when(statistics.getSecondLevelCacheHitCount()).thenReturn(3L);
-		new AuditController(session , new MockResult(), marker).colectHibernateStatistics(statistics, controlPanel);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("secondLevelCacheHitCount", "3");
 	}
 
 	@Test
 	public void shouldIncludeHibernateStatistictSecondLevelCachePutCount() throws IOException, TemplateException {
 		when(statistics.getSecondLevelCachePutCount()).thenReturn(4L);
-		new AuditController(session , new MockResult(), marker).colectHibernateStatistics(statistics, controlPanel);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("secondLevelCachePutCount", "4");
 	}
 
 	@Test
 	public void shouldIncludeVmStatisticTotalMemory(){
-		Runtime runtime = mock(Runtime.class);
 		when(runtime.totalMemory()).thenReturn(1L);
-		new AuditController(session , new MockResult(), marker).colectVmStatistics(controlPanel, runtime);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("totalMemory", "1");
 	}
 

@@ -3,6 +3,7 @@ package br.com.caelum.vraptor.dash.hibernate;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import br.com.caelum.vraptor.dash.hibernate.stats.EntityCacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
 import br.com.caelum.vraptor.dash.runtime.RuntimeStatisticsCollector;
+import br.com.caelum.vraptor.dash.statistics.Collector;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
 
@@ -60,14 +62,12 @@ public class AuditController {
 
 		Statistics statistics = session.getSessionFactory().getStatistics();
 		Template controlPanel = marker.use(CONTROL_PANEL);
-		colectHibernateStatistics(statistics, controlPanel);
 		
 		Runtime runtime = Runtime.getRuntime();
 		
+		colectStatistics(statistics, controlPanel, runtime);
 		
 		NumberFormat percentFormat = NumberFormat.getPercentInstance();
-		
-		colectVmStatistics(controlPanel, runtime);
 		
 		double usedMemory = runtime.totalMemory() - runtime.freeMemory();
 		controlPanel.with("usedMemory", decimalFormat.format(usedMemory));
@@ -140,13 +140,11 @@ public class AuditController {
 		controlPanel.render();
 	}
 
-	void colectVmStatistics(Template controlPanel,	Runtime runtime) {
-		new RuntimeStatisticsCollector(runtime).collect(controlPanel);
-	}
-
-	void colectHibernateStatistics(Statistics statistics, Template controlPanel) {
-		new HibernateStatisticsCollector(statistics).collect(controlPanel);
-		
+	void colectStatistics(Statistics statistics, Template controlPanel, Runtime runtime) {
+		List<Collector> statisticCollectors = Arrays.asList(new HibernateStatisticsCollector(statistics), new RuntimeStatisticsCollector(runtime));
+		for (Collector collector : statisticCollectors) {
+			collector.collect(controlPanel);
+		}
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
