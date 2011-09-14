@@ -1,10 +1,12 @@
 package br.com.caelum.vraptor.dash.hibernate;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import org.hibernate.Session;
 import org.hibernate.stat.Statistics;
@@ -59,6 +61,14 @@ public class AuditControllerTest {
 		when(statistics.getSecondLevelCachePutCount()).thenReturn(4L);
 		new AuditController(session , new MockResult(), marker).colectHibernateStatistics(statistics, controlPanel);
 		verify(controlPanel).with("secondLevelCachePutCount", "4");
+	}
+
+	@Test
+	public void shouldIncludeVmStatisticTotalMemory(){
+		Runtime runtime = mock(Runtime.class);
+		when(runtime.totalMemory()).thenReturn(1L);
+		new AuditController(session , new MockResult(), marker).colectVmStatistics(NumberFormat.getNumberInstance(), controlPanel, runtime);
+		verify(controlPanel).with("totalMemory", "1");
 	}
 
 }

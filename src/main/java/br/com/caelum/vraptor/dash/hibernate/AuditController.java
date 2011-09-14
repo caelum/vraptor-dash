@@ -24,6 +24,7 @@ import br.com.caelum.vraptor.dash.hibernate.stats.CollectionStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityCacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
+import br.com.caelum.vraptor.dash.runtime.RuntimeStatisticsCollector;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
 
@@ -139,9 +140,8 @@ public class AuditController {
 		controlPanel.render();
 	}
 
-	void colectVmStatistics(NumberFormat decimalFormat,
-			Template controlPanel, Runtime runtime) {
-		controlPanel.with("totalMemory", decimalFormat.format(runtime.totalMemory()));
+	void colectVmStatistics(NumberFormat decimalFormat,	Template controlPanel, Runtime runtime) {
+		new RuntimeStatisticsCollector(runtime).collect(controlPanel);
 	}
 
 	void colectHibernateStatistics(Statistics statistics, Template controlPanel) {
