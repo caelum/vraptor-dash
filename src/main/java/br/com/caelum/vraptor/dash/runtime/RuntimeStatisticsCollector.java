@@ -19,6 +19,8 @@ public class RuntimeStatisticsCollector implements Collector {
 		controlPanel.with("totalMemory", decimalFormat.format(runtime.totalMemory()));
 		controlPanel.with("usedMemory", decimalFormat.format(usedMemory()));
 		controlPanel.with("usedMemoryPerCent", percentFormat.format(usedMemory() / runtime.totalMemory()));
+		controlPanel.with("freeMemory", decimalFormat.format(runtime.freeMemory()));
+		controlPanel.with("freeMemoryPerCent", percentFormat.format((double)runtime.freeMemory() / runtime.totalMemory()));
 	}
 
 	private double usedMemory() {

@@ -67,12 +67,6 @@ public class AuditController {
 		
 		colectStatistics(statistics, controlPanel, runtime);
 		
-		NumberFormat percentFormat = NumberFormat.getPercentInstance();
-
-		controlPanel.with("freeMemory", decimalFormat.format(runtime.freeMemory()));
-		double freeMemory = runtime.freeMemory();
-		controlPanel.with("freeMemoryPerCent", percentFormat.format(freeMemory / runtime.totalMemory()));
-		
 		C3P0PooledDataSource c3p0PooledDataSource = new C3P0PooledDataSource();
 		controlPanel.with("maxPoolSize", c3p0PooledDataSource.getMaxPoolSize());
 		controlPanel.with("initPoolSize", c3p0PooledDataSource.getInitialPoolSize());

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import org.hibernate.Session;
 import org.hibernate.stat.Statistics;
@@ -84,5 +85,20 @@ public class AuditControllerTest {
 		when(runtime.freeMemory()).thenReturn(0L);
 		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("usedMemoryPerCent", "100%");
+	}
+
+	@Test
+	public void shouldIncludeVmStatisticFreeMemory(){
+		when(runtime.freeMemory()).thenReturn(5L);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
+		verify(controlPanel).with("freeMemory", "5");
+	}
+
+	@Test
+	public void shouldIncludeVmStatisticFreeMemoryPercent(){
+		when(runtime.totalMemory()).thenReturn(4L);
+		when(runtime.freeMemory()).thenReturn(0L);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
+		verify(controlPanel).with("freeMemoryPerCent", "0%");
 	}
 }
