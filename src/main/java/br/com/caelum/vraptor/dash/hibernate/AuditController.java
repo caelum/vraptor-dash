@@ -26,7 +26,6 @@ import br.com.caelum.vraptor.dash.hibernate.stats.EntityCacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
 import br.com.caelum.vraptor.dash.runtime.RuntimeStatisticsCollector;
-import br.com.caelum.vraptor.dash.statistics.Collector;
 import br.com.caelum.vraptor.dash.statistics.Collectors;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
@@ -67,7 +66,7 @@ public class AuditController {
 		Runtime runtime = Runtime.getRuntime();
 		
 		Collectors collectors = new Collectors(Arrays.asList(new HibernateStatisticsCollector(statistics), new RuntimeStatisticsCollector(runtime)));
-		colectStatistics(controlPanel, collectors);
+		collectStatistics(controlPanel, collectors);
 		
 		C3P0PooledDataSource c3p0PooledDataSource = new C3P0PooledDataSource();
 		controlPanel.with("maxPoolSize", c3p0PooledDataSource.getMaxPoolSize());
@@ -131,7 +130,7 @@ public class AuditController {
 		controlPanel.render();
 	}
 
-	void colectStatistics(Template controlPanel, Collectors collectors) {
+	void collectStatistics(Template controlPanel, Collectors collectors) {
 		collectors.collect(controlPanel);
 	}
 	
