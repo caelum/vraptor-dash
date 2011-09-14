@@ -66,7 +66,8 @@ public class AuditController {
 		
 		Runtime runtime = Runtime.getRuntime();
 		
-		colectStatistics(statistics, controlPanel, runtime);
+		Collectors collectors = new Collectors(Arrays.asList(new HibernateStatisticsCollector(statistics), new RuntimeStatisticsCollector(runtime)));
+		colectStatistics(controlPanel, collectors);
 		
 		C3P0PooledDataSource c3p0PooledDataSource = new C3P0PooledDataSource();
 		controlPanel.with("maxPoolSize", c3p0PooledDataSource.getMaxPoolSize());
@@ -130,8 +131,8 @@ public class AuditController {
 		controlPanel.render();
 	}
 
-	void colectStatistics(Statistics statistics, Template controlPanel, Runtime runtime) {
-		new Collectors(Arrays.asList(new HibernateStatisticsCollector(statistics), new RuntimeStatisticsCollector(runtime))).collect(controlPanel);
+	void colectStatistics(Template controlPanel, Collectors collectors) {
+		collectors.collect(controlPanel);
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
