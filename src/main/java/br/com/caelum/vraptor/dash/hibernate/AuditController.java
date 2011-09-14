@@ -27,6 +27,7 @@ import br.com.caelum.vraptor.dash.hibernate.stats.EntityStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
 import br.com.caelum.vraptor.dash.runtime.RuntimeStatisticsCollector;
 import br.com.caelum.vraptor.dash.statistics.Collector;
+import br.com.caelum.vraptor.dash.statistics.Collectors;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
 
@@ -130,10 +131,7 @@ public class AuditController {
 	}
 
 	void colectStatistics(Statistics statistics, Template controlPanel, Runtime runtime) {
-		List<Collector> statisticCollectors = Arrays.asList(new HibernateStatisticsCollector(statistics), new RuntimeStatisticsCollector(runtime));
-		for (Collector collector : statisticCollectors) {
-			collector.collect(controlPanel);
-		}
+		new Collectors(Arrays.asList(new HibernateStatisticsCollector(statistics), new RuntimeStatisticsCollector(runtime))).collect(controlPanel);
 	}
 	
 	void includeMethodInvocationReturnInResult(String name, Object obj, String methodName, Template controlPanel) {
