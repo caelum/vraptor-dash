@@ -66,7 +66,7 @@ public class AuditController {
 		
 		NumberFormat percentFormat = NumberFormat.getPercentInstance();
 		
-		controlPanel.with("totalMemory", decimalFormat.format(runtime.totalMemory()));
+		colectVmStatistics(decimalFormat, controlPanel, runtime);
 		
 		double usedMemory = runtime.totalMemory() - runtime.freeMemory();
 		controlPanel.with("usedMemory", decimalFormat.format(usedMemory));
@@ -137,6 +137,11 @@ public class AuditController {
 		includeMethodInvocationReturnInResult("numIdleCon", c3p0PooledDataSource, "getNumIdleConnectionsAllUsers", controlPanel);
 		includeMethodInvocationReturnInResult("numUserPools", c3p0PooledDataSource, "getNumUserPools", controlPanel);
 		controlPanel.render();
+	}
+
+	void colectVmStatistics(NumberFormat decimalFormat,
+			Template controlPanel, Runtime runtime) {
+		controlPanel.with("totalMemory", decimalFormat.format(runtime.totalMemory()));
 	}
 
 	void colectHibernateStatistics(Statistics statistics, Template controlPanel) {
