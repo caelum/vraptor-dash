@@ -68,11 +68,6 @@ public class AuditController {
 		colectStatistics(statistics, controlPanel, runtime);
 		
 		NumberFormat percentFormat = NumberFormat.getPercentInstance();
-		
-		double usedMemory = runtime.totalMemory() - runtime.freeMemory();
-		controlPanel.with("usedMemory", decimalFormat.format(usedMemory));
-		controlPanel.with("usedMemoryPerCent", percentFormat.format(usedMemory / runtime.totalMemory()));
-		
 
 		controlPanel.with("freeMemory", decimalFormat.format(runtime.freeMemory()));
 		double freeMemory = runtime.freeMemory();

@@ -72,9 +72,17 @@ public class AuditControllerTest {
 
 	@Test
 	public void shouldIncludeVmStatisticUsedMemory(){
-		when(runtime.totalMemory()).thenReturn(2L);
+		when(runtime.totalMemory()).thenReturn(4L);
+		when(runtime.freeMemory()).thenReturn(2L);
 		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
 		verify(controlPanel).with("usedMemory", "2");
 	}
 
+	@Test
+	public void shouldIncludeVmStatisticUsedMemoryPerCent(){
+		when(runtime.totalMemory()).thenReturn(4L);
+		when(runtime.freeMemory()).thenReturn(0L);
+		new AuditController(session , new MockResult(), marker).colectStatistics(statistics, controlPanel, runtime);
+		verify(controlPanel).with("usedMemoryPerCent", "100%");
+	}
 }

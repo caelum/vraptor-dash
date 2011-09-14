@@ -15,11 +15,13 @@ public class RuntimeStatisticsCollector implements Collector {
 
 	public void collect(Template controlPanel) {
 		NumberFormat decimalFormat = NumberFormat.getNumberInstance();
+		NumberFormat percentFormat = NumberFormat.getPercentInstance();
 		controlPanel.with("totalMemory", decimalFormat.format(runtime.totalMemory()));
 		controlPanel.with("usedMemory", decimalFormat.format(usedMemory()));
+		controlPanel.with("usedMemoryPerCent", percentFormat.format(usedMemory() / runtime.totalMemory()));
 	}
 
-	private long usedMemory() {
+	private double usedMemory() {
 		return runtime.totalMemory() - runtime.freeMemory();
 	}
 
