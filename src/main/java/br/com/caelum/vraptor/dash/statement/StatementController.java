@@ -1,6 +1,5 @@
 package br.com.caelum.vraptor.dash.statement;
 
-import java.io.IOException;
 import java.util.List;
 
 import br.com.caelum.vraptor.Delete;
@@ -11,11 +10,10 @@ import br.com.caelum.vraptor.Put;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.Validator;
-import br.com.caelum.vraptor.freemarker.Freemarker;
+import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.validator.ValidationMessage;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
-import freemarker.template.TemplateException;
 
 @Resource
 public class StatementController {
@@ -28,20 +26,17 @@ public class StatementController {
 	private final Validator validator;
 	private final StatementDao statements;
 	private final StatementAwareUser currentUser;
-	private final Freemarker marker;
 
-	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser, 
-			Freemarker marker) {
+	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser) {
 		this.result = result;
 		this.validator = validator;
 		this.statements = statementDao;
 		this.currentUser = currentUser;
-		this.marker = marker;
 	}
 
 	@Path("/dash/statements")
 	@Get
-	public void index(Integer size) throws IOException, TemplateException {
+	public void index(Integer size) {
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
@@ -49,12 +44,14 @@ public class StatementController {
 		if(size == null) {
 			size = 100;
 		}
-		marker.use(INDEX).with("statements", statements.all(size)).with("size", size).render();
+		result.include("statements", statements.all(size));
+		result.include("size", size);
+		result.use(FreemarkerView.class).withTemplate(INDEX);
 	}
 
 	@Path("/dash/statements/{statement.id}")
 	@Get
-	public void show(Statement statement, String password, Integer maxResults) throws IOException, TemplateException {
+	public void show(Statement statement, String password, Integer maxResults) {
 		statement = statements.load(statement.getId());
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
@@ -71,38 +68,37 @@ public class StatementController {
 	}
 
 	private void renderResponse(Statement statement, List<Object[]> results,
-			List<String> columns, Integer maxResults) throws IOException, TemplateException {
+			List<String> columns, Integer maxResults) {
 		if(results.isEmpty()) {
-			marker.use(NONE).render();
+			result.use(FreemarkerView.class).withTemplate(NONE);
 		} else {
-			marker.use(SHOW)
-				.with("statement", statement)
-				.with("result", results)
-				.with("columns", columns)
-				.with("maxResults", maxResults)
-				.render();
+			result.include("statement", statement);
+			result.include("result", results);
+			result.include("columns", columns);
+			result.include("maxResults", maxResults);
+			result.use(FreemarkerView.class).withTemplate(SHOW);
 		}
 	}
-	
-	
+
+
 	@Path("/dash/statements/execute")
 	@Post
-	public void execute(Statement statement, List<String> parameters, Integer maxResults) throws IOException, TemplateException {
-		
+	public void execute(Statement statement, List<String> parameters, Integer maxResults) {
+
 		if(maxResults == null) {
 			maxResults = 100;
 		}
-		
+
 		validateStatement(statement,parameters);
 		List<Object[]> results = statements.execute(statement,parameters,maxResults);
 		List<String> columns = statement.getColumns();
 		renderResponse(statement, results, columns, maxResults);
 	}
-	
+
 
 	@Path("/dash/statements")
 	@Post
-	public void create(Statement statement, Integer maxResults) throws IOException, TemplateException {
+	public void create(Statement statement, Integer maxResults) {
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
 			return;
@@ -114,7 +110,7 @@ public class StatementController {
 
 	@Path("/dash/statements/{statement.id}")
 	@Put
-	public void update(Statement statement) throws IOException, TemplateException {
+	public void update(Statement statement) {
 		validateStatement(statement,null);
 		if (!currentUser.canCreateStatements()) {
 			result.use(HttpResult.class).sendError(401);
@@ -136,7 +132,7 @@ public class StatementController {
 		result.nothing();
 	}
 
-	private void validateStatement(Statement statement, List<String> parameters) throws IOException, TemplateException {
+	private void validateStatement(Statement statement, List<String> parameters) {
 		try {
 			statement.validate(statements,parameters);
 		} catch (IllegalArgumentException e) {

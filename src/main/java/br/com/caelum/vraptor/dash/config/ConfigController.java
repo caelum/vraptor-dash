@@ -13,8 +13,7 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.uristats.IdeableUser;
-import br.com.caelum.vraptor.freemarker.Freemarker;
-import br.com.caelum.vraptor.view.HttpResult;
+import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import freemarker.template.TemplateException;
 
 @Resource
@@ -22,15 +21,13 @@ public class ConfigController {
 
 	private static final String JS = "config/config.js";
 
-	private final Freemarker marker;
 	private final Session session;
 	private final IdeableUser currentUser;
 	private final Result result;
 
-	public ConfigController(Session session, IdeableUser currentUser, Freemarker marker, Result result) {
+	public ConfigController(Session session, IdeableUser currentUser, Result result) {
 		this.session = session;
 		this.currentUser = currentUser;
-		this.marker = marker;
 		this.result = result;
 	}
 
@@ -46,12 +43,13 @@ public class ConfigController {
 	@Post
 	public void create(String key, String value) throws IOException, TemplateException {
 		session.save(new UserConfig(key, value, currentUser.getId().toString()));
-		result.use(HttpResult.class).setStatusCode(200);
+		result.nothing();
 	}
 
 	@Path("/dash/config.js")
 	@Get
 	public void js(String key) throws IOException, TemplateException {
-		marker.use(JS).with("configs", all(key)).render();
+		result.include("configs", all(key));
+		result.use(FreemarkerView.class).withTemplate(JS);
 	}
 }
