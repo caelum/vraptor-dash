@@ -2,8 +2,8 @@ package br.com.caelum.vraptor.dash.runtime;
 
 import java.text.NumberFormat;
 
+import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.statistics.Collector;
-import br.com.caelum.vraptor.freemarker.Template;
 
 public class RuntimeStatisticsCollector implements Collector {
 
@@ -13,14 +13,14 @@ public class RuntimeStatisticsCollector implements Collector {
 		this.runtime = runtime;
 	}
 
-	public void collect(Template controlPanel) {
+	public void collect(Result result) {
 		NumberFormat decimalFormat = NumberFormat.getNumberInstance();
 		NumberFormat percentFormat = NumberFormat.getPercentInstance();
-		controlPanel.with("totalMemory", decimalFormat.format(runtime.totalMemory()));
-		controlPanel.with("usedMemory", decimalFormat.format(usedMemory()));
-		controlPanel.with("usedMemoryPerCent", percentFormat.format(usedMemory() / runtime.totalMemory()));
-		controlPanel.with("freeMemory", decimalFormat.format(runtime.freeMemory()));
-		controlPanel.with("freeMemoryPerCent", percentFormat.format((double)runtime.freeMemory() / runtime.totalMemory()));
+		result.include("totalMemory", decimalFormat.format(runtime.totalMemory()));
+		result.include("usedMemory", decimalFormat.format(usedMemory()));
+		result.include("usedMemoryPerCent", percentFormat.format(usedMemory() / runtime.totalMemory()));
+		result.include("freeMemory", decimalFormat.format(runtime.freeMemory()));
+		result.include("freeMemoryPerCent", percentFormat.format((double)runtime.freeMemory() / runtime.totalMemory()));
 	}
 
 	private double usedMemory() {

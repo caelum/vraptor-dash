@@ -2,7 +2,7 @@ package br.com.caelum.vraptor.dash.statistics;
 
 import java.util.List;
 
-import br.com.caelum.vraptor.freemarker.Template;
+import br.com.caelum.vraptor.Result;
 
 public class Collectors implements Collector {
 
@@ -13,9 +13,9 @@ public class Collectors implements Collector {
 	}
 
 	@Override
-	public void collect(Template template) {
+	public void collect(Result result) {
 		for (Collector collector : collectors) {
-			collector.collect(template);
+			collector.collect(result);
 		}
 	}
 
