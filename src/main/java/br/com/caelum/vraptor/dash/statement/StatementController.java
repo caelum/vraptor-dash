@@ -55,16 +55,34 @@ public class StatementController {
 		statement = statements.load(statement.getId());
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
-			if(maxResults == null) {
-				maxResults = 100;
-			}
-			validateStatement(statement,null);
-			List<Object[]> results = statements.execute(statement,null,maxResults);
+			List<Object[]> results = executeStatement(statement, maxResults);
 			List<String> columns = statement.getColumns();
 			renderResponse(statement, results, columns, maxResults);
 		} else {
 			result.use(HttpResult.class).sendError(401);
 		}
+	}
+	
+	@Path("/dash/statements/{statement.id}/json")
+	@Get
+	public void showJSON(Statement statement, String password, Integer maxResults) {
+		statement = statements.load(statement.getId());
+		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
+		if (canView) {
+			List<Object[]> results = executeStatement(statement, maxResults);
+			result.use(Results.json()).from(results).serialize();
+		} else {
+			result.use(HttpResult.class).sendError(401);
+		}
+	}
+
+	private List<Object[]> executeStatement(Statement statement, Integer maxResults) {
+		if(maxResults == null) {
+			maxResults = 100;
+		}
+		validateStatement(statement,null);
+		List<Object[]> results = statements.execute(statement,null,maxResults);
+		return results;
 	}
 
 	private void renderResponse(Statement statement, List<Object[]> results,
