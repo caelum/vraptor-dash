@@ -136,7 +136,7 @@
 	<#list result as row>
 		<tr>
 		<#list row as value>
-			<td>${value}</td>
+			<td>${value!"null"}</td>
 		</#list>
 		</tr>
 	</#list>
