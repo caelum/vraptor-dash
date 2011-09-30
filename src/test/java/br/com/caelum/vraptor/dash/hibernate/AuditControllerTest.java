@@ -28,32 +28,39 @@ public class AuditControllerTest {
 	private Session session;
 	@Mock
 	private Statistics statistics;
+	@Mock
+	private HibernateAuditAwareUser user;
+	
 
 	@Test
 	public void shouldIncludeHibernateStatisticConnectionCount() throws IOException, TemplateException {
 		when(statistics.getConnectCount()).thenReturn(1L);
-		new AuditController(session, marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
+		when(user.canSeeHibernateAudits()).thenReturn(true);
+		new AuditController(session, marker, user, null).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("connectionCount", "1");
 	}
 
 	@Test
 	public void shouldIncludeHibernateStatisticSecondLevelCacheMissCount() throws IOException, TemplateException {
 		when(statistics.getSecondLevelCacheMissCount()).thenReturn(2L);
-		new AuditController(session, marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
+		when(user.canSeeHibernateAudits()).thenReturn(true);
+		new AuditController(session, marker, user, null).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("secondLevelCacheMissCount", "2");
 	}
 
 	@Test
 	public void shouldIncludeHibernateStatistictSecondLevelCacheHitCount() throws IOException, TemplateException {
 		when(statistics.getSecondLevelCacheHitCount()).thenReturn(3L);
-		new AuditController(session, marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
+		when(user.canSeeHibernateAudits()).thenReturn(true);
+		new AuditController(session, marker, user, null).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("secondLevelCacheHitCount", "3");
 	}
 
 	@Test
 	public void shouldIncludeHibernateStatistictSecondLevelCachePutCount() throws IOException, TemplateException {
 		when(statistics.getSecondLevelCachePutCount()).thenReturn(4L);
-		new AuditController(session, marker).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
+		when(user.canSeeHibernateAudits()).thenReturn(true);
+		new AuditController(session, marker, user, null).extractConnectionCount(NumberFormat.getNumberInstance(), statistics, controlPanel);
 		verify(controlPanel).with("secondLevelCachePutCount", "4");
 	}
 

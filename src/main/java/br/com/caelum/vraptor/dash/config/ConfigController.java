@@ -14,6 +14,7 @@ import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.uristats.IdeableUser;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
+import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
 @Resource
@@ -25,14 +26,21 @@ public class ConfigController {
 	private final IdeableUser currentUser;
 	private final Result result;
 
-	public ConfigController(Session session, IdeableUser currentUser, Result result) {
+	private final ConfigurationsAwareUser user;
+
+	public ConfigController(Session session, IdeableUser currentUser, Result result, ConfigurationsAwareUser user) {
 		this.session = session;
 		this.currentUser = currentUser;
 		this.result = result;
+		this.user = user;
 	}
 
 	@SuppressWarnings("unchecked")
 	private List<UserConfig> all(String key) {
+		if(! user.canSeeConfigurations()) {
+			result.use(HttpResult.class).sendError(401);
+			return null;
+		}
 		Query all = session.createQuery("from DashUserConfig where userId = :id and key like :key").setCacheable(true);
 		all.setParameter("id", currentUser.getId());
 		all.setParameter("key", key);
@@ -42,6 +50,10 @@ public class ConfigController {
 	@Path("/dash/config")
 	@Post
 	public void create(String key, String value) throws IOException, TemplateException {
+		if(! user.canSeeConfigurations()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
+		}
 		session.save(new UserConfig(key, value, currentUser.getId().toString()));
 		result.nothing();
 	}
@@ -49,6 +61,10 @@ public class ConfigController {
 	@Path("/dash/config.js")
 	@Get
 	public void js(String key) throws IOException, TemplateException {
+		if(! user.canSeeConfigurations()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
+		}
 		result.include("configs", all(key));
 		result.use(FreemarkerView.class).withTemplate(JS);
 	}

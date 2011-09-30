@@ -14,6 +14,7 @@ import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.http.route.Route;
 import br.com.caelum.vraptor.http.route.Router;
+import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
 @Resource
@@ -25,17 +26,23 @@ public class RoutesController {
 	private final Router router;
 	private final Environment environment;
 	private final Result result;
+	private final MonitorAwareUser user;
 
-	public RoutesController(Router router, Result result, Environment environment) {
+	public RoutesController(Router router, Result result, Environment environment, MonitorAwareUser user) {
 		this.router = router;
 		this.result = result;
 		this.environment = environment;
+		this.user = user;
 	}
 
 	@Path("/dash/routes") @Get
 	public void allRoutes() throws IOException, TemplateException {
 		if (PRODUCTION.equals(environment.getName())) {
 			throw new UnsupportedOperationException();
+		}
+		if(! user.canSeeMonitorStats()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
 		}
 
 		List<Route> routes = orderRoutesByURI(router.allRoutes());

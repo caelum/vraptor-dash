@@ -19,6 +19,7 @@ import br.com.caelum.vraptor.dash.hibernate.AuditController;
 import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
+import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
 import freemarker.template.TemplateException;
 
@@ -29,14 +30,20 @@ public class SystemController {
 	private static Logger log = LoggerFactory.getLogger(AuditController.class);
 	private final Environment environment;
 	private final Result result;
+	private final MonitorAwareUser user;
 
-	public SystemController(Environment environment, Result result) {
+	public SystemController(Environment environment, Result result, MonitorAwareUser user) {
 		this.environment = environment;
 		this.result = result;
+		this.user = user;
 	}
 
 	@Get("/dash/system_properties")
 	public InputStreamDownload properties() throws IOException {
+		if(! user.canSeeMonitorStats()) {
+			result.use(HttpResult.class).sendError(401);
+			return null;
+		}
 		StringBuilder sb = new StringBuilder();
 
 		Set<Entry<Object, Object>> entrySet = System.getProperties().entrySet();
@@ -51,6 +58,10 @@ public class SystemController {
 	@Get("/dash/log/{name}")
 	@Audit
 	public InputStreamDownload log(String name) throws IOException {
+		if(! user.canSeeMonitorStats()) {
+			result.use(HttpResult.class).sendError(401);
+			return null;
+		}
 		File file = new File(name);
 		String allowedPattern = environment.get(SystemController.ALLOWED_LOG_REGEX);
 		if(!name.matches(allowedPattern)) {
@@ -66,12 +77,20 @@ public class SystemController {
 
 	@Get("/dash/threads")
 	public void threads() throws IOException, TemplateException {
+		if(! user.canSeeMonitorStats()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
+		}
 		result.include("stackTraces", Thread.getAllStackTraces().entrySet());
 		result.use(FreemarkerView.class).withTemplate("audit/basicMonitor");
 	}
 
 	@Get("/dash/threads/stats")
 	public void threadStats() {
+		if(! user.canSeeMonitorStats()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
+		}
 		new BasicMonitor().logStats();
 		result.use(Results.http()).body("Statistics logged").setStatusCode(200);
 	}

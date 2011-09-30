@@ -23,12 +23,14 @@ public class SystemControllerTest {
 	private @Mock Result result;
 	private @Mock Status httpStatus;
 	private @Mock Environment environment;
+	private @Mock MonitorAwareUser user;
 	private SystemController controller;
 
 	@Before
 	public void setUp() throws Exception {
-		controller = new SystemController(environment, result);
+		controller = new SystemController(environment, result, user);
 		when(result.use(Results.status())).thenReturn(httpStatus);
+		when(user.canSeeMonitorStats()).thenReturn(true);
 	}
 
 	@Test

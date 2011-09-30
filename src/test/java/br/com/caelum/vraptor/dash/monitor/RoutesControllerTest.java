@@ -18,12 +18,14 @@ public class RoutesControllerTest {
 
 	private @Mock Router router;
 	private @Mock Environment environment;
+	private @Mock MonitorAwareUser user;
 
 	private RoutesController controller;
 
 	@Before
 	public void setUp() throws Exception {
-		this.controller = new RoutesController(router, new MockResult(), environment);
+		this.controller = new RoutesController(router, new MockResult(), environment, user);
+		when(user.canSeeMonitorStats()).thenReturn(true);
 	}
 
 	@Test

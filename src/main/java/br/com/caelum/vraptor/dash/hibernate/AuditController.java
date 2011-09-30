@@ -18,6 +18,7 @@ import org.hibernate.stat.Statistics;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.hibernate.stats.CacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.CollectionStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.EntityCacheStatsWrapper;
@@ -25,6 +26,7 @@ import br.com.caelum.vraptor.dash.hibernate.stats.EntityStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
 import br.com.caelum.vraptor.freemarker.Freemarker;
 import br.com.caelum.vraptor.freemarker.Template;
+import br.com.caelum.vraptor.view.HttpResult;
 
 import com.mchange.v2.c3p0.mbean.C3P0PooledDataSource;
 
@@ -36,14 +38,22 @@ public class AuditController {
 	private static final String CONTROL_PANEL = "audit/controlPanel";
 	private final Session session;
 	private final Freemarker marker;
+	private final HibernateAuditAwareUser user;
+	private final Result result;
 
-	public AuditController(Session session, Freemarker marker) {
+	public AuditController(Session session, Freemarker marker, HibernateAuditAwareUser user, Result result) {
 		this.session = session;
 		this.marker = marker;
+		this.user = user;
+		this.result = result;
 	}
 
 	@Path("/dash/controlPanel") @Get
 	public void controlPanel() throws IOException, TemplateException {
+		if(! user.canSeeHibernateAudits()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
+		}
 		NumberFormat decimalFormat = NumberFormat.getNumberInstance();
 		decimalFormat.setGroupingUsed(true);
 
