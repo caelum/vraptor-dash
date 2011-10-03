@@ -17,6 +17,8 @@ import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Resource
 public class ConfigController {
 
@@ -27,13 +29,16 @@ public class ConfigController {
 	private final Result result;
 
 	private final ConfigurationsAwareUser user;
+    private final HttpServletResponse response;
 
-	public ConfigController(Session session, IdeableUser currentUser, Result result, ConfigurationsAwareUser user) {
+    public ConfigController(Session session, IdeableUser currentUser, Result result, ConfigurationsAwareUser user,
+                            HttpServletResponse response) {
 		this.session = session;
 		this.currentUser = currentUser;
 		this.result = result;
 		this.user = user;
-	}
+        this.response = response;
+    }
 
 	@SuppressWarnings("unchecked")
 	private List<UserConfig> all(String key) {
@@ -66,6 +71,7 @@ public class ConfigController {
 			return;
 		}
 		result.include("configs", all(key));
+        response.setContentType("text/javascript");
 		result.use(FreemarkerView.class).withTemplate(JS);
 	}
 }

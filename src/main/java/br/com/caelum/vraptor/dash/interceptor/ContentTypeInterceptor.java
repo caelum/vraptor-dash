@@ -30,8 +30,8 @@ public class ContentTypeInterceptor implements Interceptor {
 	@Override
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object object) throws InterceptionException {
-			stack.next(method, object);
-			response.setContentType("text/html");
+        response.setContentType("text/html");
+        stack.next(method, object);
 	}
 
 }
