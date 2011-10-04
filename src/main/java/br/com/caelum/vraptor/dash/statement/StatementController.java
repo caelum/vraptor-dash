@@ -2,8 +2,6 @@ package br.com.caelum.vraptor.dash.statement;
 
 import java.util.List;
 
-import com.google.common.base.Objects;
-
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -52,12 +50,11 @@ public class StatementController {
 	}
 
 	@Path("/dash/statements/{statement.id}")
-	@Get
+	@Post
 	public void show(Statement statement, String password, Integer maxResults) {
 		statement = statements.load(statement.getId());
 		maxResults = (maxResults == null ? 100 : maxResults);
-		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
-		if (canView) {
+		if (canView(statement, password)) {
 			List<Object[]> results = executeStatement(statement, maxResults);
 			List<String> columns = statement.getColumns();
 			renderResponse(statement, results, columns, maxResults);
@@ -65,13 +62,27 @@ public class StatementController {
 			result.use(HttpResult.class).sendError(401);
 		}
 	}
-	
-	@Path("/dash/statements/{statement.id}/json")
+
+	private boolean canView(Statement statement, String password) {
+		return currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
+	}
+
+	@Path("/dash/statements/{statement.id}")
 	@Get
+	public void form(Statement statement, Integer maxResults) {
+		if(canView(statement, "")) {
+			result.forwardTo(this).show(statement, "", maxResults);
+		}
+		result.include("maxResults", maxResults);
+		result.include("statement", statement);
+		result.use(FreemarkerView.class).withTemplate("statement/form");
+	}
+
+	@Path("/dash/statements/{statement.id}/json")
+	@Post
 	public void showJSON(Statement statement, String password, Integer maxResults) {
 		statement = statements.load(statement.getId());
-		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
-		if (canView) {
+		if (canView(statement, password)) {
 			List<Object[]> results = executeStatement(statement, maxResults);
 			result.use(Results.json()).from(results).serialize();
 		} else {
@@ -126,7 +137,7 @@ public class StatementController {
 		}
 		validateStatement(statement,null);
 		statements.save(statement);
-		result.use(Results.logic()).redirectTo(getClass()).show(statement, statement.getPassword(), maxResults);
+		result.redirectTo(this).form(statement, maxResults);
 	}
 
 	@Path("/dash/statements/{statement.id}")
