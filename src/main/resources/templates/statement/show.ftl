@@ -120,10 +120,10 @@
 			<input type="text" name="statement.name" value="${statement.name}"/>
 			<br/>
 			<label class="strong">Hql:</label>
-			<textarea name="statement.hql">${statement.hql}</textarea>
+			<textarea name="statement.hql" cols="100" rows="15">${statement.hql}</textarea>
 			<br/>
 			<label for="stmtListSize">Max results: </label>
-			<input type="text" id="stmtListSize" name="maxResults" value="${maxResults}" />
+			<input type="text" id="stmtListSize" name="maxResults" value="${maxResults?c}" />
 			<input type="submit" id="submitSize" value="Execute" />	
 		</form>
 	</div>

@@ -2,6 +2,8 @@ package br.com.caelum.vraptor.dash.statement;
 
 import java.util.List;
 
+import com.google.common.base.Objects;
+
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -53,6 +55,7 @@ public class StatementController {
 	@Get
 	public void show(Statement statement, String password, Integer maxResults) {
 		statement = statements.load(statement.getId());
+		maxResults = (maxResults == null ? 100 : maxResults);
 		boolean canView = currentUser.canCreateStatements() || statement.canBeAccessedWithKey(password);
 		if (canView) {
 			List<Object[]> results = executeStatement(statement, maxResults);
@@ -155,7 +158,7 @@ public class StatementController {
 			statement.validate(statements,parameters);
 		} catch (IllegalArgumentException e) {
 			validator.add(new ValidationMessage("invalid_hql", "invalid_hql", e.getCause().getMessage()));
-			validator.onErrorUse(Results.logic()).forwardTo(getClass()).index(null);
+			validator.onErrorUse(Results.logic()).redirectTo(getClass()).index(null);
 		}
 	}
 }

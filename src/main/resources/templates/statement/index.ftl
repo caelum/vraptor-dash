@@ -9,7 +9,13 @@
 			<div id="errors">
 				<ul>
 				<#list errors.iterator() as error>
-					<li>${error}</li>
+					<#-- if vraptor 2 message -->
+					<#if error.class.name = "org.vraptor.i18n.FixedMessage">
+						<li>${error.category}</li>
+					<#-- it's vraptor 3 -->
+					<#else>
+						${error.category} - ${error.message}
+					</#if>
 				</#list>
 				</ul>
 			</div>
@@ -24,7 +30,7 @@
 				<input id="size" type="text" name="maxResults" value="100"/><br/><br/>
 				
 				<div id="query">
-					<textarea id="hqlToExecute" style="width: 600px; height: 200px" name="statement.hql"></textarea>
+					<textarea id="hqlToExecute" cols="100" rows="15" name="statement.hql"></textarea>
 					<ul id="parameters" style="float: right; list-style:none; margin: 0px; padding-left:10px; width:600px;">
 					</ul>
 				</div>
@@ -32,8 +38,8 @@
 			</div>
 	
 			<div style="padding-top:3px; clear:left">
-				<input type="submit" id="execute" value="Execute" />
-				<input type="button" id="create" value="Create" />
+				<input type="submit" id="execute" value="Execute Only" />
+				<input type="button" id="create" value="Save and Execute" />
 			</div>
 	
 		</form>
