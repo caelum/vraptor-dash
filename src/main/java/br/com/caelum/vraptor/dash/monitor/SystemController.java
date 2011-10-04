@@ -27,7 +27,7 @@ import freemarker.template.TemplateException;
 public class SystemController {
 
 	public static final String ALLOWED_LOG_REGEX = "br.com.caelum.vraptor.dash.log.allowed";
-	private static Logger log = LoggerFactory.getLogger(AuditController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AuditController.class);
 	private final Environment environment;
 	private final Result result;
 	private final MonitorAwareUser user;
@@ -68,7 +68,7 @@ public class SystemController {
 			result.use(Results.status()).forbidden("This file is not a log");
 			return null;
 		}
-		log.info("accessing file: " + file.getCanonicalPath	());
+		LOG.debug("accessing file: " + file.getCanonicalPath());
 		if (!file.exists()) {
 			throw new IllegalStateException("file not found");
 		}

@@ -1,7 +1,6 @@
 package br.com.caelum.vraptor.dash.uristats;
 
 import java.util.Calendar;
-import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +25,7 @@ public class Stat {
 
 	@Lob
 	private final String uri;
-	
+
 	@Lob
 	private final String queryString;
 
@@ -76,9 +75,9 @@ public class Stat {
 
 	public void log() {
 		if("GET".equalsIgnoreCase(verb)) {
-			LOG.debug(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri, queryString));
+			LOG.info(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri, queryString));
 		}else{
-			LOG.debug(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri));
+			LOG.info(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri));
 		}
 	}
 }
