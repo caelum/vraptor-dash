@@ -1,3 +1,5 @@
 <html>
-No results
+	<body>
+		No results
+	</body>
 </html>

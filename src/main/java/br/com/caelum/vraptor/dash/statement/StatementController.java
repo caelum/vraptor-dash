@@ -49,7 +49,7 @@ public class StatementController {
 		result.use(FreemarkerView.class).withTemplate(INDEX);
 	}
 
-	@Path("/dash/statements/{statement.id}")
+	@Path(value = "/dash/statements/{statement.id}", priority = Path.LOWEST)
 	@Post
 	public void show(Statement statement, String password, Integer maxResults) {
 		statement = statements.load(statement.getId());
@@ -72,10 +72,11 @@ public class StatementController {
 	public void form(Statement statement, Integer maxResults) {
 		if(canView(statement, "")) {
 			result.forwardTo(this).show(statement, "", maxResults);
+		} else {
+			result.include("maxResults", maxResults);
+			result.include("statement", statement);
+			result.use(FreemarkerView.class).withTemplate("statement/form");
 		}
-		result.include("maxResults", maxResults);
-		result.include("statement", statement);
-		result.use(FreemarkerView.class).withTemplate("statement/form");
 	}
 
 	@Path("/dash/statements/{statement.id}/json")
