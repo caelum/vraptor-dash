@@ -11,7 +11,7 @@ import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
-import br.com.caelum.vraptor.validator.ValidationMessage;
+import br.com.caelum.vraptor.validator.I18nMessage;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
 
@@ -169,8 +169,8 @@ public class StatementController {
 		try {
 			statement.validate(statements,parameters);
 		} catch (IllegalArgumentException e) {
-			validator.add(new ValidationMessage("invalid_hql", "invalid_hql", e.getCause().getMessage()));
-			validator.onErrorUse(Results.logic()).redirectTo(getClass()).index(null);
+			validator.add(new I18nMessage("hql", "invalid_hql", e.getCause().getMessage()));
+			validator.onErrorRedirectTo(this).index(null);
 		}
 	}
 }
