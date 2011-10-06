@@ -117,6 +117,10 @@ public class StatementController {
 	@Path("/dash/statements/execute")
 	@Post
 	public void execute(Statement statement, List<String> parameters, Integer maxResults) {
+		if (!currentUser.canCreateStatements()) {
+			result.use(HttpResult.class).sendError(401);
+			return;
+		}
 
 		if(maxResults == null) {
 			maxResults = 100;
