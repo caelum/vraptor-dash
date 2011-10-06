@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.dash.config;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,6 +22,7 @@ public class UserConfig {
 	@GeneratedValue
 	private Long id;
 	
+	@Column(name="dashKey")
 	private String key;
 	
 	private String value;
