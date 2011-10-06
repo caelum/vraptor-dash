@@ -155,7 +155,7 @@ public class StatementController {
 		loaded.setPassword(statement.getPassword());
 		validateStatement(loaded,null);
 		statements.merge(loaded);
-		result.use(Results.logic()).forwardTo(getClass()).show(loaded, loaded.getPassword(),null);
+		result.forwardTo(this).show(loaded, loaded.getPassword(), null);
 	}
 
 	@Path("/dash/statements/{statement.id}")

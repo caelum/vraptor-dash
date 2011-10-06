@@ -8,13 +8,13 @@
 		<#if errors??>
 			<div id="errors">
 				<ul>
-				<#list errors.iterator() as error>
+				<#list errors as error>
 					<#-- if vraptor 2 message -->
 					<#if error.class.name = "org.vraptor.i18n.FixedMessage">
 						<li>${error.category}</li>
 					<#-- it's vraptor 3 -->
 					<#else>
-						${error.category} - ${error.message}
+						<li>${error.category} - ${error.message}</li>
 					</#if>
 				</#list>
 				</ul>

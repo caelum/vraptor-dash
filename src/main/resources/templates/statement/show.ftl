@@ -1,5 +1,51 @@
 <html>
-<head>
+<body>
+
+<fieldset>
+	<legend>${statement.name}</legend>
+
+	<button id="graphShow">Graph</button>
+	<div id="graph" class="hideme">
+		<div id="graphCanvas">
+			To generate a graph, the query must contain only two or three columns, being the last one a numeric value.
+		</div>
+		<form id="cumulativeGraphForm" style="display:none">
+			<input type="checkbox" id="cumulativeGraph" name="cumulativeGraph" />
+			<label for="cumulativeGraph">cumulative graph</label>
+		</form>
+	</div>
+	<br/>
+	<br/>
+	<div style="padding-top:3px; clear:left">
+		<form id="frmStatement" action="execute" method="post">
+			<label class="strong">Name:</label>
+			<input type="text" name="statement.name" value="${statement.name}"/>
+			<br/>
+			<label class="strong">Hql:</label>
+			<textarea name="statement.hql" cols="100" rows="15">${statement.hql}</textarea>
+			<br/>
+			<label for="stmtListSize">Max results: </label>
+			<input type="text" id="stmtListSize" name="maxResults" value="${maxResults?c}" />
+			<input type="submit" id="execute" value="Execute" />
+			<input type="button" id="create" value="Save and Execute" />
+		</form>
+	</div>
+	<table id="result">
+	<tr>
+	<#list columns as column>
+		<td><strong>${column}</strong></td>
+	</#list>
+	</tr>
+	<#list result as row>
+		<tr>
+		<#list row as value>
+			<td>${value!"null"}</td>
+		</#list>
+		</tr>
+	</#list>
+	</table>
+</fieldset>
+</body>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
 	google.load("jquery", "1.6.2");
@@ -13,6 +59,17 @@
 				$('#cumulativeGraphForm').show();
 			</#if>
 			drawChart();
+			$('#create').click(function() {
+				if (window.location.href.match(/execute/)) {
+					var newStatementHref = window.location.href.replace(/(.*)\/.*/, '$1');
+					$('#frmStatement').attr('action', newStatementHref).submit();
+				} else {
+					$('#frmStatement')
+						.append('<input type="hidden" name="_method" value="put"/>')
+						.attr('action','')
+						.submit();
+				}
+			});
         });
 	});
 	
@@ -92,55 +149,4 @@
 		$("#graph").toggle("slow");
 	}
 </script>
-</head>
-<body>
-
-<fieldset style="padding: 4px; float:left; width:100%" class="fieldsetChique">
-	<legend>${statement.name}</legend>
-
-	<button id="graphShow">Graph</button>
-	<div id="graph" class="hideme">
-		<div id="graphCanvas">
-			To generate a graph, the query must contain only two or three columns, being the last one a numeric value.
-		</div>
-		<form id="cumulativeGraphForm" style="display:none">
-			<input type="checkbox" id="cumulativeGraph" name="cumulativeGraph" />
-			<label for="cumulativeGraph">cumulative graph</label>
-		</form>
-	</div>
-	<br/>
-	<br/>
-	<div style="padding-top:3px; clear:left">
-		<#if statement.id??>
-			<form id="resultsSize" action='${statement.id}'>
-		<#else>
-			<form id="resultsSize" action="execute" method="post">
-		</#if>
-			<label class="strong">Name:</label>
-			<input type="text" name="statement.name" value="${statement.name}"/>
-			<br/>
-			<label class="strong">Hql:</label>
-			<textarea name="statement.hql" cols="100" rows="15">${statement.hql}</textarea>
-			<br/>
-			<label for="stmtListSize">Max results: </label>
-			<input type="text" id="stmtListSize" name="maxResults" value="${maxResults?c}" />
-			<input type="submit" id="submitSize" value="Execute" />	
-		</form>
-	</div>
-	<table id="result">
-	<tr>
-	<#list columns as column>
-		<td><strong>${column}</strong></td>
-	</#list>
-	</tr>
-	<#list result as row>
-		<tr>
-		<#list row as value>
-			<td>${value!"null"}</td>
-		</#list>
-		</tr>
-	</#list>
-	</table>
-</fieldset>
-</body>
 </html>
