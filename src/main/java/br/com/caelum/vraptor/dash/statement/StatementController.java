@@ -102,15 +102,11 @@ public class StatementController {
 
 	private void renderResponse(Statement statement, List<Object[]> results,
 			List<String> columns, Integer maxResults) {
-		if(results.isEmpty()) {
-			result.use(FreemarkerView.class).withTemplate(NONE);
-		} else {
-			result.include("statement", statement);
-			result.include("result", results);
-			result.include("columns", columns);
-			result.include("maxResults", maxResults);
-			result.use(FreemarkerView.class).withTemplate(SHOW);
-		}
+		result.include("statement", statement);
+		result.include("result", results);
+		result.include("columns", columns);
+		result.include("maxResults", maxResults);
+		result.use(FreemarkerView.class).withTemplate(SHOW);
 	}
 
 

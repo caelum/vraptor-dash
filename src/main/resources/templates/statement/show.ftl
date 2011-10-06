@@ -31,18 +31,22 @@
 		</form>
 	</div>
 	<table id="result">
-	<tr>
-	<#list columns as column>
-		<td><strong>${column}</strong></td>
-	</#list>
-	</tr>
-	<#list result as row>
+	<#if result?size == 0>
+		<tr><td>No results</td></tr>
+	<#else>
 		<tr>
-		<#list row as value>
-			<td>${value!"null"}</td>
+		<#list columns as column>
+			<td><strong>${column}</strong></td>
 		</#list>
 		</tr>
-	</#list>
+		<#list result as row>
+			<tr>
+			<#list row as value>
+				<td>${value!"null"}</td>
+			</#list>
+			</tr>
+		</#list>
+	</#if>
 	</table>
 </fieldset>
 </body>
@@ -55,8 +59,10 @@
 			$('#graph').hide();
 			$('#cumulativeGraph').click(drawChart);
 			$('#graphShow').click(graphDisplay);
-			<#if result[0]?size==2 || result[0]?size==3>
-				$('#cumulativeGraphForm').show();
+			<#if (result?size > 0)>
+				<#if result[0]?size==2 || result[0]?size==3>
+					$('#cumulativeGraphForm').show();
+				</#if>
 			</#if>
 			drawChart();
 			$('#create').click(function() {
@@ -74,6 +80,7 @@
 	});
 	
     function drawChart() {
+    	<#if (result?size > 0)>
         var acumular = $('#cumulativeGraph').attr('checked');
         var chartOptions = {width: 800, height: 450, title: 'Statement'};
         var chartDrawArea = document.getElementById('graphCanvas');
@@ -143,6 +150,7 @@
 			var chart = new google.visualization.LineChart(chartDrawArea);
 			chart.draw(data, chartOptions);
 		}
+		</#if>
 	}
 
 	function graphDisplay() {
