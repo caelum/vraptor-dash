@@ -4,9 +4,10 @@ import java.text.NumberFormat;
 
 import org.hibernate.stat.Statistics;
 
-import br.com.caelum.vraptor.freemarker.Template;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.dash.statistics.Collector;
 
-public class HibernateStatisticsCollector {
+public class HibernateStatisticsCollector implements Collector {
 
 	private NumberFormat decimalFormat;
 	private Statistics statistics;
@@ -17,11 +18,11 @@ public class HibernateStatisticsCollector {
 		
 	}
 
-	public void collect(Template template) {
-		template.with("connectionCount", decimalFormat.format(statistics.getConnectCount()));
-		template.with("secondLevelCacheMissCount", decimalFormat.format(statistics.getSecondLevelCacheMissCount()));
-		template.with("secondLevelCacheHitCount", decimalFormat.format(statistics.getSecondLevelCacheHitCount()));
-		template.with("secondLevelCachePutCount", decimalFormat.format(statistics.getSecondLevelCachePutCount()));
+	public void collect(Result result) {
+		result.include("connectionCount", decimalFormat.format(statistics.getConnectCount()));
+		result.include("secondLevelCacheMissCount", decimalFormat.format(statistics.getSecondLevelCacheMissCount()));
+		result.include("secondLevelCacheHitCount", decimalFormat.format(statistics.getSecondLevelCacheHitCount()));
+		result.include("secondLevelCachePutCount", decimalFormat.format(statistics.getSecondLevelCachePutCount()));
 	}
 
 }
