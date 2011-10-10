@@ -152,7 +152,6 @@ public class StatementController {
 		Statement loaded = statements.load(statement.getId());
 		loaded.setHql(statement.getHql());
 		loaded.setName(statement.getName());
-		loaded.setPassword(statement.getPassword());
 		validateStatement(loaded,null);
 		statements.merge(loaded);
 		result.forwardTo(this).show(loaded, loaded.getPassword(), null);
