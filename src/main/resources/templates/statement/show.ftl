@@ -30,131 +30,179 @@
 			<input type="button" id="create" value="Save and Execute" />
 		</form>
 	</div>
-	<table id="result">
+	<table id="result_data">
 	<#if result?size == 0>
 		<tr><td>No results</td></tr>
 	<#else>
-		<tr>
-		<#list columns as column>
-			<td><strong>${column}</strong></td>
-		</#list>
-		</tr>
-		<#list result as row>
+	
+		<thead>
 			<tr>
-			<#list row as value>
-				<td>${value!"null"}</td>
-			</#list>
+				<#list columns as column>
+					<th>${column}</th>
+				</#list>
 			</tr>
-		</#list>
+		</thead>
+		<tbody>
+			<#list result as row>
+				<tr>
+				<#list row as value>
+					<td>${value!"null"}</td>
+				</#list>
+				</tr>
+			</#list>
+		</tbody>
 	</#if>
 	</table>
 </fieldset>
-</body>
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
-	google.load("jquery", "1.6.2");
-	google.load("visualization", "1", {packages:["linechart"]});
-    google.setOnLoadCallback(function() {
-        $(function() {
-			$('#graph').hide();
-			$('#cumulativeGraph').click(drawChart);
-			$('#graphShow').click(graphDisplay);
-			<#if (result?size > 0)>
-				<#if result[0]?size==2 || result[0]?size==3>
-					$('#cumulativeGraphForm').show();
-				</#if>
-			</#if>
-			drawChart();
-			$('#create').click(function() {
-				if (window.location.href.match(/execute/)) {
-					var newStatementHref = window.location.href.replace(/(.*)\/.*/, '$1');
-					$('#frmStatement').attr('action', newStatementHref).submit();
-				} else {
-					$('#frmStatement')
-						.append('<input type="hidden" name="_method" value="put"/>')
-						.attr('action','')
-						.submit();
-				}
-			});
+    
+    function TwoColumnChartDrawer(data, headers) {
+        var graphData = [headers];
+        for(var i = 0; i < data.length; i++) {
+            graphData.push(data[i]);
+        }
+        return function(options, canvas, columnsToHide) {
+            if(columnsToHide != undefined && columnsToHide.length > 0) {
+                throw Exception("Can't filter 2 columns chart");
+            }
+            var chart = new google.visualization.LineChart(canvas);
+            var dataTable = google.visualization.arrayToDataTable(graphData);
+            chart.draw(dataTable, options);
+        }
+    }
+    
+    function ThreeColumnChartDrawer(data, headers) {
+        // depende da ordenação total dos dados
+        function createLine(begin, end, data, columns) {
+            var line = [data[begin][1]];
+            var j = begin;
+            var i = 0;
+            for(;j < end && i < columns.length; i++) {
+                if(data[j][0] == columns[i]) {
+                    line.push(data[j][2]);
+                    j++;
+                } else {
+                    line.push(null);
+                }
+            }
+            while(i < columns.length) {
+                line.push(null);
+                i++;
+            }   
+            return line;
+        }
+    
+        var columns = [];
+        var _columns = {};
+        // ordena as colunas sem repetição
+        for(var i = 0; i < data.length; i++) {
+            if(_columns[data[i][0]] != 1) {
+                _columns[data[i][0]] = 1;
+                columns.push(data[i][0]);
+            }
+        }
+        columns.sort();
+        // faz a ordenação total dos dados
+        data.sort(function(a, b) {
+            if(a[1] == b[1]) {
+                if(a[0] < b[0]) return -1;
+                else if(a[0] > b[0]) return 1;
+                else return 0;
+            } else {
+                if(a[1] < b[1]) return -1;
+                else if(a[1] > b[1]) return 1;
+                else return 0;
+            }
         });
-	});
-	
-    function drawChart() {
-    	<#if (result?size > 0)>
-        var acumular = $('#cumulativeGraph').attr('checked');
-        var chartOptions = {width: 800, height: 450, title: 'Statement'};
-        var chartDrawArea = document.getElementById('graphCanvas');
-		var data = new google.visualization.DataTable();
-		<#if result[0]?size == 2>
-			data.addColumn('string', 'Column 1');
-			data.addColumn('number', 'Column 2');
+        
+        var firstline = [headers[1]];
+        for(var i = 0; i < columns.length; i++) {
+            firstline.push(columns[i]);
+        }
+        var lines = [firstline];
+        
+        for(i = 0; i < data.length;) {
+            var valor = data[i][1];
+            var j = i;
+            // enquanto eu estiver na mesma linha
+            for(; j <= data.length; j++) {
+                if(j == data.length || data[j][1] != valor) {
+                    break;
+                }
+            }
+            lines.push(createLine(i, j, data, columns));
+            i = j;
+        }
+       
+        return function(options, canvas, columnsToHide) {
+            var chartData = [];
+            var indicesToHide = [];
+            for(var i = 0; i < columnsToHide.length; i++){
+                indicesToHide.push(columns.indexOf(columnsToHide[i]) + 1);
+            }
+            
+            for(var i = 0; i < lines.length; i++) {
+                var line = [];
+                for(var j = 0; j < lines[i].length; j++) {
+                    if(indicesToHide.indexOf(j) == -1) {
+                        line.push(lines[i][j]);
+                    }
+                }
+                chartData.push(line);
+            }
+            var dataTable = google.visualization.arrayToDataTable(chartData);
+            var chart = new google.visualization.LineChart(canvas);
+            chart.draw(dataTable, options);
+        }
+    }
+    
+    function readTableData(tableId) {
+        var data = [];
+        var headers = [];
+        $("#" + tableId + " thead tr th").each(function() {
+            headers.push($(this).text());
+        });
+        var columns = headers.length;
+        $("#" + tableId + " tbody tr").each(function() {
+            var line = [];
+            $(this).find("td").each(function() {
+                var valor = parseFloat($(this).text());
+                if(valor) {
+                    line.push(valor);
+                } else {
+                    line.push($(this).text());
+                }
+            });
+            if(columns > line.length) {
+            	columns = line.length;
+            }
+            data.push(line);
+        });
+        return [data, headers, columns];
+    }
+    
+    function getGraphDrawer() {
+        var dataAndHeaders = readTableData("result_data");
+        var data = dataAndHeaders[0];
+        var headers = dataAndHeaders[1];
+    
+        if(dataAndHeaders[2] == 2) {
+            return TwoColumnChartDrawer(data, headers);
+        } else if(dataAndHeaders[2] == 3) {
+            return ThreeColumnChartDrawer(data, headers);
+        }
+    }
 
-			data.addRows(${result?size});
-			var acumulador = 0;
-			<#assign status = -1>
-			<#list result as linha>
-				<#assign status = status + 1>
-				data.setCell(${status}, 0, '${linha[0]}');
-				if(acumular == true) {
-					acumulador += ${linha[1]};
-					data.setCell(${status}, 1, acumulador);
-				} else {
-					data.setCell(${status}, 1, ${linha[1]});
-				}
-			</#list>
-
-		</#if>
-		<#if result[0]?size == 3>
-			var indiceDaLinha = {};
-			var colunas = {};
-			data.addColumn('string', 'Coluna 1');
-			<#list result as linha>
-				indiceDaLinha['${linha[0]}'] = 0;
-			</#list>
-			var counter = 1;
-			for (var key in indiceDaLinha) {
-				data.addColumn('number', key);
-				indiceDaLinha[key] = counter++;
-			}
-			
-			
-			<#list result as linha>
-				colunas['${linha[1]}'] = 0;
-			</#list>
-			counter = 0;
-			for(var k in colunas) { 
-				counter++;
-			}
-			data.addRows(counter);
-			
-			counter = 0;
-			for (var key in colunas) {
-				data.setCell(counter, 0, key);
-				colunas[key] = counter++;
-			}
-			var acumulador = {};
-			for (var index in indiceDaLinha) {
-				acumulador[index] = 0;
-			}
-			<#list result as linha>
-				if (acumular == true) {
-					acumulador['${linha[0]}'] += ${linha[2]};
-					data.setCell(colunas['${linha[1]}'], indiceDaLinha['${linha[0]}'], acumulador['${linha[0]}']);
-				} else {
-					data.setCell(colunas['${linha[1]}'], indiceDaLinha['${linha[0]}'], ${linha[2]});
-				}
-			</#list>
-		</#if>
-		var columnCount = $('table#result tr:first-child td').size();
-		if (columnCount == 2 || columnCount == 3) {
-			var chart = new google.visualization.LineChart(chartDrawArea);
-			chart.draw(data, chartOptions);
-		}
-		</#if>
-	}
-
-	function graphDisplay() {
-		$("#graph").toggle("slow");
-	}
+    google.load("jquery", "1.6.2");
+    google.load("visualization", "1", {packages:["linechart"]});
+    google.setOnLoadCallback(function() {
+        var draw = getGraphDrawer();
+        var canvas = document.getElementById('graph');
+        console.log(draw);
+        draw({width: 800, height: 450, title: 'Statement'}, canvas, []);
+    });
 </script>
+</body>
 </html>
