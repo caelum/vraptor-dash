@@ -35,8 +35,8 @@ public class BaseURIStatInterceptor implements Interceptor {
 		this.response = response;
 	}
 
-	public boolean accepts(ResourceMethod arg0) {
-		return true;
+	public boolean accepts(ResourceMethod rm) {
+		return !rm.getResource().getType().isAnnotationPresent(NoURIStats.class);
 	}
 
 	public void intercept(InterceptorStack stack, ResourceMethod method,
