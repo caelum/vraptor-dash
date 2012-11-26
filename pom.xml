@@ -51,18 +51,13 @@
 		<dependency>
 			<groupId>br.com.caelum</groupId>
 			<artifactId>vraptor</artifactId>
-			<version>3.3.0</version>
+			<version>3.4.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>br.com.caelum.vraptor</groupId>
-			<artifactId>vraptor-freemarker</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>br.com.caelum.vraptor</groupId>
 			<artifactId>vraptor-environment</artifactId>
-			<version>1.0.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
