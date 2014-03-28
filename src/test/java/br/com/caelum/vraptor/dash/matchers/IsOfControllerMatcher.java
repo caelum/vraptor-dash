@@ -4,13 +4,13 @@ import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.TypeSafeMatcher;
 
+import br.com.caelum.vraptor.controller.ControllerMethod;
 import br.com.caelum.vraptor.dash.hibernate.stats.OpenRequest;
-import br.com.caelum.vraptor.resource.ResourceMethod;
 
-public final class IsOfResourceMatcher extends TypeSafeMatcher<OpenRequest> {
-	private final ResourceMethod resourceMethod;
+public final class IsOfControllerMatcher extends TypeSafeMatcher<OpenRequest> {
+	private final ControllerMethod resourceMethod;
 
-	private IsOfResourceMatcher(ResourceMethod resourceMethod) {
+	private IsOfControllerMatcher(ControllerMethod resourceMethod) {
 		this.resourceMethod = resourceMethod;
 	}
 
@@ -22,7 +22,7 @@ public final class IsOfResourceMatcher extends TypeSafeMatcher<OpenRequest> {
 
 	@Override
 	protected boolean matchesSafely(OpenRequest item) {
-		return new OpenRequest(this.resourceMethod).getResource().equals(item.getResource());
+		return new OpenRequest(this.resourceMethod).getController().equals(item.getController());
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public final class IsOfResourceMatcher extends TypeSafeMatcher<OpenRequest> {
 	}
 
 	@Factory
-	public static IsOfResourceMatcher isOpenRequestOfResource(ResourceMethod resourceMethod) {
-		return new IsOfResourceMatcher(resourceMethod);
+	public static IsOfControllerMatcher isOpenRequestOfController(ControllerMethod resourceMethod) {
+		return new IsOfControllerMatcher(resourceMethod);
 	}
 }

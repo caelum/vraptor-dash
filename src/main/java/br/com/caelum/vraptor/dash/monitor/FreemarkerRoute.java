@@ -4,10 +4,10 @@ import java.lang.reflect.Field;
 import java.util.EnumSet;
 
 import net.vidageek.mirror.dsl.Mirror;
+import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.controller.HttpMethod;
 import br.com.caelum.vraptor.http.route.FixedMethodStrategy;
 import br.com.caelum.vraptor.http.route.Route;
-import br.com.caelum.vraptor.resource.HttpMethod;
-import br.com.caelum.vraptor.resource.ResourceMethod;
 
 public class FreemarkerRoute {
 
@@ -36,7 +36,7 @@ public class FreemarkerRoute {
 		Field resourceMethodField = new Mirror().on(FixedMethodStrategy.class).reflect().field("resourceMethod");
 		resourceMethodField.setAccessible(true);
 		try {
-			ResourceMethod resourceMethod = (ResourceMethod) resourceMethodField.get(route);
+			ControllerMethod resourceMethod = (ControllerMethod) resourceMethodField.get(route);
 			return resourceMethod.getMethod().toString();
 		} catch (Exception e) {
 			return "Unknown: " + e.getMessage();

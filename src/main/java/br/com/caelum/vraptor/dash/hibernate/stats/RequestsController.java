@@ -1,22 +1,31 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
+import javax.inject.Inject;
+
+import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Path;
-import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.HttpResult;
 
-@Resource
+@Controller
 public class RequestsController {
 
 	private final Result result;
 	private final OpenRequests requests;
 	private final HibernateStatsAwareUser user;
 	
-
+	@Inject
 	public RequestsController(Result result, OpenRequests requests, HibernateStatsAwareUser user) {
 		this.result = result;
 		this.requests = requests;
 		this.user = user;
+	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected RequestsController() {
+		this(null, null, null);
 	}
 
 	@Path("/dash/requests")

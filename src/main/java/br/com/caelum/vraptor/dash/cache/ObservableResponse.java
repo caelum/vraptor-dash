@@ -5,10 +5,12 @@ import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.enterprise.inject.Vetoed;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+@Vetoed
 public class ObservableResponse extends HttpServletResponseWrapper {
 
 	private MessageDigest digester;
@@ -190,7 +192,5 @@ public class ObservableResponse extends HttpServletResponseWrapper {
 		this.status = sc;
 		super.setStatus(sc);
 	}
-	
-	
 
 }

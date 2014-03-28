@@ -1,7 +1,10 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.hibernate.stat.QueryStatistics;
 
+@Vetoed
 public class QueryStatsWrapper {
 
 	private final String query;
@@ -10,7 +13,6 @@ public class QueryStatsWrapper {
 	public QueryStatsWrapper(String query, QueryStatistics queryStats) {
 		this.query = query;
 		this.queryStats = queryStats;
-		
 	}
 
 	public long getCacheHitCount() {

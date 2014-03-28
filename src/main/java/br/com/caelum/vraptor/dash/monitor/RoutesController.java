@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
-import br.com.caelum.vraptor.Path;
-import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
@@ -17,7 +18,7 @@ import br.com.caelum.vraptor.http.route.Router;
 import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
-@Resource
+@Controller
 public class RoutesController {
 
 	private static final String PRODUCTION = "production";
@@ -28,14 +29,22 @@ public class RoutesController {
 	private final Result result;
 	private final MonitorAwareUser user;
 
+	@Inject
 	public RoutesController(Router router, Result result, Environment environment, MonitorAwareUser user) {
 		this.router = router;
 		this.result = result;
 		this.environment = environment;
 		this.user = user;
 	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected RoutesController() {
+		this(null, null, null, null);
+	}
 
-	@Path("/dash/routes") @Get
+	@Get("/dash/routes")
 	public void allRoutes() throws IOException, TemplateException {
 		if (PRODUCTION.equals(environment.getName())) {
 			throw new UnsupportedOperationException();

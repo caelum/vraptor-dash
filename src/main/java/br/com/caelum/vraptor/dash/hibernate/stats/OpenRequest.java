@@ -4,16 +4,19 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Random;
 
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import javax.enterprise.inject.Vetoed;
 
+import br.com.caelum.vraptor.controller.ControllerMethod;
+
+@Vetoed
 public class OpenRequest {
 
-	private final String resource;
+	private final String controller;
 	private final Calendar startingTime;
 	private final long id;
 
-	public OpenRequest(ResourceMethod resourceMethod) {
-		this(resourceMethod.getMethod(), resourceMethod.getResource().getType());
+	public OpenRequest(ControllerMethod method) {
+		this(method.getMethod(), method.getController().getType());
 	}
 
 	public OpenRequest(Method method, Class<?> type) {
@@ -21,13 +24,13 @@ public class OpenRequest {
 	}
 
 	public OpenRequest(Method method, Class<?> type, Calendar startingTime) {
-		this.resource = ("Method: " + method.getName()+ ", Type: " + type.getName());
+		this.controller = ("Method: " + method.getName()+ ", Type: " + type.getName());
 		this.startingTime = startingTime;
 		this.id = hashCode() * new Random().nextInt();
 	}
 
-	public String getResource() {
-		return resource;
+	public String getController() {
+		return controller;
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class OpenRequest {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((startingTime == null) ? 0 : startingTime.hashCode());
-		result = prime * result + ((resource == null) ? 0 : resource.hashCode());
+		result = prime * result + ((controller == null) ? 0 : controller.hashCode());
 		return result;
 	}
 
@@ -58,11 +61,11 @@ public class OpenRequest {
 		} else if (!startingTime.equals(other.startingTime)) {
 			return false;
 		}
-		if (resource == null) {
-			if (other.resource != null) {
+		if (controller == null) {
+			if (other.controller != null) {
 				return false;
 			}
-		} else if (!resource.equals(other.resource)) {
+		} else if (!controller.equals(other.controller)) {
 			return false;
 		}
 		return true;

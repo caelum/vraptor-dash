@@ -1,9 +1,12 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.hibernate.stat.CollectionStatistics;
 import org.hibernate.stat.SecondLevelCacheStatistics;
 import org.hibernate.stat.Statistics;
 
+@Vetoed
 public class CollectionStatsWrapper {
 
 	private final String collectionRoleName;
