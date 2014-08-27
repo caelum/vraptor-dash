@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import br.com.caelum.vraptor.Controller;
@@ -18,6 +19,7 @@ import br.com.caelum.vraptor.http.route.Router;
 import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
+@Alternative
 @Controller
 public class RoutesController {
 

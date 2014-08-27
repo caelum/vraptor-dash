@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
 import freemarker.template.TemplateException;
 
+@Alternative
 @Controller
 public class SystemController {
 
