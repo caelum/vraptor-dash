@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import net.sf.ehcache.CacheManager;
@@ -32,6 +33,7 @@ import br.com.caelum.vraptor.view.HttpResult;
 
 import com.mchange.v2.c3p0.mbean.C3P0PooledDataSource;
 
+@Alternative
 @Controller
 public class AuditController {
 

@@ -2,6 +2,7 @@ package br.com.caelum.vraptor.dash.statement;
 
 import java.util.List;
 
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import br.com.caelum.vraptor.Controller;
@@ -17,6 +18,7 @@ import br.com.caelum.vraptor.validator.Validator;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
 
+@Alternative
 @Controller
 public class StatementController {
 

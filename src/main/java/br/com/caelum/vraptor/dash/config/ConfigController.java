@@ -4,6 +4,7 @@ package br.com.caelum.vraptor.dash.config;
 import java.io.IOException;
 import java.util.List;
 
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +21,7 @@ import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
+@Alternative
 @Controller
 public class ConfigController {
 
