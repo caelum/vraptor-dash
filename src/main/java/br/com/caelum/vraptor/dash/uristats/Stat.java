@@ -12,11 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An stat that represents a specific request to a specific uri from an user at some time.
+ * An stat that represents a specific request to a specific uri from an user at
+ * some time.
+ * 
  * @author guilherme silveira
  */
-@Table(name="DashUriStat")
-@Entity(name="DashUriStat")
+@Table(name = "DashUriStat")
+@Entity(name = "DashUriStat")
 public class Stat {
 
 	@Id
@@ -51,11 +53,15 @@ public class Stat {
 
 	private final long size;
 
+	private final String ipAdress;
+
 	Stat() {
-		this("", "", "",  0, "", "", "", "",0 , "unknown", "", 0);
+		this("", "", "", 0, "", "", "", "", 0, "unknown", "", 0,"");
 	}
 
-	public Stat(String userId, String uri, String queryString, long time, String verb, String resource, String action, String etag, int resultCode, String hadEtag, String cache, long size) {
+	public Stat(String userId, String uri, String queryString, long time,
+			String verb, String resource, String action, String etag,
+			int resultCode, String hadEtag, String cache, long size, String ipAdress) {
 		this.userId = userId;
 		this.uri = uri;
 		this.queryString = queryString;
@@ -65,6 +71,7 @@ public class Stat {
 		this.hadEtag = hadEtag;
 		this.cache = cache;
 		this.size = size;
+		this.ipAdress = ipAdress;
 		this.createdAt = Calendar.getInstance();
 		this.resource = resource;
 		this.method = action;
@@ -74,10 +81,16 @@ public class Stat {
 	private static final Logger LOG = LoggerFactory.getLogger(Stat.class);
 
 	public void log() {
-		if("GET".equalsIgnoreCase(verb)) {
-			LOG.info(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri, queryString));
-		}else{
-			LOG.info(String.format("%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s", createdAt,etag, verb, resource, method, time, hadEtag, resultCode, cache, size, userId, uri));
+		if ("GET".equalsIgnoreCase(verb)) {
+			LOG.info(String.format(
+					"%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s-%s", createdAt,
+					etag, verb, resource, method, time, hadEtag, resultCode,
+					cache, size, userId, uri, queryString,ipAdress));
+		} else {
+			LOG.info(String.format(
+					"%tc-[%s]-%s-%s-%s-%d-%s-%d-[%s]-%d-[%s]-%s-%s", createdAt,
+					etag, verb, resource, method, time, hadEtag, resultCode,
+					cache, size, userId, uri,ipAdress));
 		}
 	}
 }

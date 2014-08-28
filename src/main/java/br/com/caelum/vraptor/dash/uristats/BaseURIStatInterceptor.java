@@ -53,6 +53,7 @@ public class BaseURIStatInterceptor implements Interceptor {
 			String resource = method.getResource().getType().getName();
 			String methodName = method.getMethod().getName();
 	
+			
 			String etag = "";
 			String cacheControl = "";
 			String hadEtag = "unknown";
@@ -78,16 +79,26 @@ public class BaseURIStatInterceptor implements Interceptor {
 			
 			String queryString = extractQueryString(request.getMethod());
 			
+			String ip = extractIpAdress();
+			
 			Stat stat = new Stat(key, request.getRequestURI(), queryString, time,
 					request.getMethod(), resource, methodName,
 					etag, status, hadEtag,
-					cacheControl, size);
+					cacheControl, size,extractIpAdress());
 			
 			saveStat(stat);
 			
 		} catch (Exception ex) {
 			LOG.error("Unable to prepare stat to save:", ex);
 		}
+	}
+
+	private String extractIpAdress() {
+		String ipAddress = request.getHeader("X-FORWARDED-FOR");
+		if (ipAddress == null) {
+			ipAddress = request.getRemoteAddr();
+		}
+		return ipAddress;
 	}
 
 	private String extractQueryString(String method) {
