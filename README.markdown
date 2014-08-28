@@ -22,6 +22,20 @@ Add the entity to your hibernate.cfg.xml:
 	br.com.caelum.vraptor.dash.statement.Statement
 	br.com.caelum.vraptor.dash.uristats.Stat
 
+Enable vraptor-dash controllers in your beans.xml:
+
+```
+<beans ...>
+    <alternatives>
+        <class>br.com.caelum.vraptor.dash.config.ConfigController</class>
+        <class>br.com.caelum.vraptor.dash.hibernate.AuditController</class>
+        <class>br.com.caelum.vraptor.dash.hibernate.stats.RequestsController</class>
+        <class>br.com.caelum.vraptor.dash.monitor.RoutesController</class>
+        <class>br.com.caelum.vraptor.dash.monitor.SystemController</class>
+    </alternatives>
+</beans>
+```
+
 Create a component that implements StatementAwareUser:
 
 	@Component
