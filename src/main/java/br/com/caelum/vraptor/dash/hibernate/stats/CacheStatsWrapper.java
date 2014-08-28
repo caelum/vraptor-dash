@@ -1,7 +1,10 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.hibernate.stat.SecondLevelCacheStatistics;
 
+@Vetoed
 public class CacheStatsWrapper {
 
 	private final String cacheName;

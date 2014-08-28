@@ -2,20 +2,22 @@ package br.com.caelum.vraptor.dash.statement;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Put;
-import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.validator.I18nMessage;
+import br.com.caelum.vraptor.validator.Validator;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
 
-@Resource
+@Controller
 public class StatementController {
 
 	private static final String SHOW = "statement/show";
@@ -27,11 +29,19 @@ public class StatementController {
 	private final StatementDao statements;
 	private final StatementAwareUser currentUser;
 
+	@Inject
 	public StatementController(Result result, Validator validator, StatementDao statementDao, StatementAwareUser currentUser) {
 		this.result = result;
 		this.validator = validator;
 		this.statements = statementDao;
 		this.currentUser = currentUser;
+	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected StatementController() {
+		this(null, null, null, null);
 	}
 
 	@Path("/dash/statements")

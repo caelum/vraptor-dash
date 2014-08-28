@@ -4,22 +4,23 @@ package br.com.caelum.vraptor.dash.config;
 import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
-import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.uristats.IdeableUser;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
 import br.com.caelum.vraptor.view.HttpResult;
 import freemarker.template.TemplateException;
 
-import javax.servlet.http.HttpServletResponse;
-
-@Resource
+@Controller
 public class ConfigController {
 
 	private static final String JS = "config/config.js";
@@ -31,6 +32,7 @@ public class ConfigController {
 	private final ConfigurationsAwareUser user;
     private final HttpServletResponse response;
 
+    @Inject
     public ConfigController(Session session, IdeableUser currentUser, Result result, ConfigurationsAwareUser user,
                             HttpServletResponse response) {
 		this.session = session;
@@ -39,6 +41,13 @@ public class ConfigController {
 		this.user = user;
         this.response = response;
     }
+    
+    /**
+	 * @deprecated CDI eyes only
+	 */
+	protected ConfigController() {
+		this(null, null, null, null, null);
+	}
 
 	@SuppressWarnings("unchecked")
 	private List<UserConfig> all(String key) {

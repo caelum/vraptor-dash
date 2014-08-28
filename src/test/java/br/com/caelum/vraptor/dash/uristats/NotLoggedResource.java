@@ -1,8 +1,8 @@
 package br.com.caelum.vraptor.dash.uristats;
 
-import br.com.caelum.vraptor.Resource;
+import br.com.caelum.vraptor.Controller;
 
-@Resource
+@Controller
 @NoURIStats
 public class NotLoggedResource {
 

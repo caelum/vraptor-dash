@@ -8,22 +8,24 @@ import java.nio.charset.Charset;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
-import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.audit.Audit;
 import br.com.caelum.vraptor.dash.hibernate.AuditController;
 import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
-import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
+import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.HttpResult;
 import br.com.caelum.vraptor.view.Results;
 import freemarker.template.TemplateException;
 
-@Resource
+@Controller
 public class SystemController {
 
 	public static final String ALLOWED_LOG_REGEX = "br.com.caelum.vraptor.dash.log.allowed";
@@ -32,10 +34,18 @@ public class SystemController {
 	private final Result result;
 	private final MonitorAwareUser user;
 
+	@Inject
 	public SystemController(Environment environment, Result result, MonitorAwareUser user) {
 		this.environment = environment;
 		this.result = result;
 		this.user = user;
+	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected SystemController() {
+		this(null, null, null);
 	}
 
 	@Get("/dash/system_properties")

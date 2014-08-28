@@ -11,8 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import br.com.caelum.vraptor.controller.HttpMethod;
 import br.com.caelum.vraptor.http.route.Route;
-import br.com.caelum.vraptor.resource.HttpMethod;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FreemarkerRouteTest {

@@ -1,30 +1,36 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
-import br.com.caelum.vraptor.InterceptionException;
-import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.interceptor.Interceptor;
-import br.com.caelum.vraptor.ioc.Component;
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import javax.inject.Inject;
 
-@Component
-public class OpenRequestInterceptor implements Interceptor {
+import br.com.caelum.vraptor.AroundCall;
+import br.com.caelum.vraptor.Intercepts;
+import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
+
+@Intercepts
+public class OpenRequestInterceptor {
 
 	private final OpenRequests requests;
+	private final ControllerMethod method;
 	
-	public OpenRequestInterceptor(OpenRequests requests) {
+	@Inject
+	public OpenRequestInterceptor(OpenRequests requests, ControllerMethod method) {
 		this.requests = requests;
+		this.method = method;
 	}
 	
-	@Override
-	public boolean accepts(ResourceMethod arg0) {
-		return true;
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected OpenRequestInterceptor() {
+		this(null, null);
 	}
-
-	@Override
-	public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) throws InterceptionException {
+	
+	@AroundCall
+	public void intercept(SimpleInterceptorStack stack) {
 		OpenRequest openRequest = requests.add(method);
 		try {
-			stack.next(method, instance);
+			stack.next();
 		} finally {
 			requests.remove(openRequest);
 		}

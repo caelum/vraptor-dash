@@ -13,7 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.environment.Environment;
-import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
+import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.caelum.vraptor.view.Status;
 

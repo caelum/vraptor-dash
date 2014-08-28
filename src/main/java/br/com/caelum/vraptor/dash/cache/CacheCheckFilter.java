@@ -10,11 +10,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CacheCheckFilter implements Filter {
 
-	private final static Logger LOGGER = Logger.getLogger(CacheCheckFilter.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(CacheCheckFilter.class);
 
 	public void destroy() {
 	}

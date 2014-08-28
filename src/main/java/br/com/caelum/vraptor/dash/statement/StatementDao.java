@@ -3,18 +3,25 @@ package br.com.caelum.vraptor.dash.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import br.com.caelum.vraptor.ioc.Component;
-
-@Component
 public class StatementDao {
 
 	private final Session session;
 	
+	@Inject
 	public StatementDao(Session session) {
 		this.session = session;
+	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected StatementDao() {
+		this(null);
 	}
 
 	public void validate(String hql, List<String> parameters) {

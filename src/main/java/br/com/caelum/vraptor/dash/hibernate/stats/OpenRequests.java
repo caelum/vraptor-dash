@@ -3,18 +3,17 @@ package br.com.caelum.vraptor.dash.hibernate.stats;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import br.com.caelum.vraptor.ioc.ApplicationScoped;
-import br.com.caelum.vraptor.ioc.Component;
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import javax.enterprise.context.ApplicationScoped;
+
+import br.com.caelum.vraptor.controller.ControllerMethod;
 
 @ApplicationScoped
-@Component
 public class OpenRequests {
 
 	private final Map<Long, OpenRequest> openRequests = new ConcurrentHashMap<Long, OpenRequest>();
 
-	public OpenRequest add(ResourceMethod resourceMethod) {
-		OpenRequest req = new OpenRequest(resourceMethod);
+	public OpenRequest add(ControllerMethod controllerMethod) {
+		OpenRequest req = new OpenRequest(controllerMethod);
 		openRequests.put(req.getId(), req);
 		return req;
 	}

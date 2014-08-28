@@ -14,11 +14,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.controller.DefaultBeanClass;
+import br.com.caelum.vraptor.controller.DefaultControllerMethod;
 import br.com.caelum.vraptor.dash.statement.StatementController;
-import br.com.caelum.vraptor.resource.DefaultResourceClass;
-import br.com.caelum.vraptor.resource.DefaultResourceMethod;
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import br.com.caelum.vraptor.validator.Validator;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentTypeInterceptorTest {
@@ -28,16 +28,16 @@ public class ContentTypeInterceptorTest {
 	@Test
 	public void acceptsOnlyControllersInsideDashPackage() throws Exception {
 		ContentTypeInterceptor interceptor = new ContentTypeInterceptor(response);
-		ResourceMethod vraptorDashMethod = resourceMethodInClass(StatementController.class, "index", Integer.class);
+		ControllerMethod vraptorDashMethod = resourceMethodInClass(StatementController.class, "index", Integer.class);
 		assertTrue(interceptor.accepts(vraptorDashMethod));
-		ResourceMethod vraptorRandomMethod = resourceMethodInClass(Validator.class, "validate", Object.class);
+		ControllerMethod vraptorRandomMethod = resourceMethodInClass(Validator.class, "validate", Object.class);
 		assertFalse(interceptor.accepts(vraptorRandomMethod));
 	}
 
-	private ResourceMethod resourceMethodInClass(Class<?> type, String methodName, Class<?>... methodArgs) {
-		DefaultResourceClass vraptorDashController = new DefaultResourceClass(type);
+	private ControllerMethod resourceMethodInClass(Class<?> type, String methodName, Class<?>... methodArgs) {
+		DefaultBeanClass vraptorDashController = new DefaultBeanClass(type);
 		Method dashMethod = new Mirror().on(vraptorDashController.getClass()).reflect().method(methodName).withArgs(methodArgs);
-		DefaultResourceMethod vraptorDashMethod = new DefaultResourceMethod(vraptorDashController, dashMethod);
+		DefaultControllerMethod vraptorDashMethod = new DefaultControllerMethod(vraptorDashController, dashMethod);
 		return vraptorDashMethod;
 	}
 }

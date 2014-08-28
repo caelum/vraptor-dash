@@ -1,12 +1,13 @@
 package br.com.caelum.vraptor.dash.hibernate;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import net.sf.ehcache.CacheManager;
 import net.vidageek.mirror.dsl.Mirror;
@@ -16,9 +17,8 @@ import org.hibernate.stat.EntityStatistics;
 import org.hibernate.stat.QueryStatistics;
 import org.hibernate.stat.Statistics;
 
+import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
-import br.com.caelum.vraptor.Path;
-import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.hibernate.stats.CacheStatsWrapper;
 import br.com.caelum.vraptor.dash.hibernate.stats.CollectionStatsWrapper;
@@ -28,12 +28,11 @@ import br.com.caelum.vraptor.dash.hibernate.stats.QueryStatsWrapper;
 import br.com.caelum.vraptor.dash.runtime.RuntimeStatisticsCollector;
 import br.com.caelum.vraptor.dash.statistics.Collectors;
 import br.com.caelum.vraptor.freemarker.FreemarkerView;
-import br.com.caelum.vraptor.freemarker.Template;
 import br.com.caelum.vraptor.view.HttpResult;
 
 import com.mchange.v2.c3p0.mbean.C3P0PooledDataSource;
 
-@Resource
+@Controller
 public class AuditController {
 
 	private static final String CONTROL_PANEL = "audit/controlPanel";
@@ -41,13 +40,21 @@ public class AuditController {
 	private final HibernateAuditAwareUser user;
 	private final Result result;
 
+	@Inject
 	public AuditController(Session session, HibernateAuditAwareUser user, Result result) {
 		this.session = session;
 		this.user = user;
 		this.result = result;
 	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected AuditController() {
+		this(null, null, null);
+	}
 
-	@Path("/dash/controlPanel") @Get
+	@Get("/dash/controlPanel") 
 	public void controlPanel() {
 		if(!user.canSeeHibernateAudits()) {
 			result.use(HttpResult.class).sendError(401);

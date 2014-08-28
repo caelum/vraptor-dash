@@ -2,11 +2,14 @@ package br.com.caelum.vraptor.dash.hibernate;
 
 import java.text.NumberFormat;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.hibernate.stat.Statistics;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.dash.statistics.Collector;
 
+@Vetoed
 public class HibernateStatisticsCollector implements Collector {
 
 	private NumberFormat decimalFormat;
@@ -15,7 +18,6 @@ public class HibernateStatisticsCollector implements Collector {
 	public HibernateStatisticsCollector(Statistics statistics) {
 		this.statistics = statistics;
 		this.decimalFormat = NumberFormat.getNumberInstance();
-		
 	}
 
 	public void collect(Result result) {

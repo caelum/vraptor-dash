@@ -1,7 +1,10 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.hibernate.stat.EntityStatistics;
 
+@Vetoed
 public class EntityStatsWrapper {
 
 	private final String entityName;

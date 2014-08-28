@@ -1,5 +1,8 @@
 package br.com.caelum.vraptor.dash.hibernate.stats;
 
+import javax.enterprise.inject.Vetoed;
+
+@Vetoed
 public class EntityCacheStatsWrapper {
 
 	private EntityStatsWrapper entityStatsWrapper;

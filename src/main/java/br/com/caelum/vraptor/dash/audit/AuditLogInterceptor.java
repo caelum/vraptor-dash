@@ -1,37 +1,47 @@
 package br.com.caelum.vraptor.dash.audit;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
-import br.com.caelum.vraptor.InterceptionException;
-import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.Accepts;
+import br.com.caelum.vraptor.AroundCall;
+import br.com.caelum.vraptor.Intercepts;
+import br.com.caelum.vraptor.controller.ControllerMethod;
 import br.com.caelum.vraptor.dash.uristats.BaseURIStatInterceptor;
-import br.com.caelum.vraptor.interceptor.Interceptor;
-import br.com.caelum.vraptor.ioc.Component;
+import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.caelum.vraptor.ioc.Container;
-import br.com.caelum.vraptor.resource.ResourceMethod;
 
-@Component
-public class AuditLogInterceptor implements Interceptor {
+@Intercepts
+public class AuditLogInterceptor  {
 
-	private static final Logger LOG = Logger.getLogger(AuditLogInterceptor.class);
+	private static final Logger LOG = getLogger(AuditLogInterceptor.class);
 	private final HttpServletRequest request;
 	private final Container container;
 
+	@Inject
 	public AuditLogInterceptor(Container container, HttpServletRequest request) {
 		this.container = container;
 		this.request = request;
 	}
+	
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	protected AuditLogInterceptor() {
+		this(null, null);
+	}
 
-	@Override
-	public boolean accepts(ResourceMethod method) {
+	@Accepts
+	public boolean accepts(ControllerMethod method) {
 		return method.containsAnnotation(Audit.class);
 	}
 
-	@Override
-	public void intercept(InterceptorStack stack, ResourceMethod method,
-			Object object) throws InterceptionException {
+	@AroundCall
+	public void intercept(SimpleInterceptorStack stack, ControllerMethod method) {
 		try {
 			if (LOG.isInfoEnabled()) {
 				StringBuilder builder = new StringBuilder(String.format(
@@ -47,9 +57,7 @@ public class AuditLogInterceptor implements Interceptor {
 				}
 				LOG.info(builder.toString());
 			}
-			stack.next(method, object);
-		
-		
+			stack.next();
 		} catch (Exception ex) {
 			LOG.error("error:",ex);
 		}
