@@ -96,12 +96,11 @@ public class BaseURIStatInterceptor {
 			
 			String queryString = extractQueryString(request.getMethod());
 			
-			String ip = extractIpAdress();
 			
 			Stat stat = new Stat(key, request.getRequestURI(), queryString, time,
 					request.getMethod(), resource, methodName,
 					etag, status, hadEtag,
-					cacheControl, size,extractIpAdress());
+					cacheControl, size,extractIpAddress());
 			
 			saveStat(stat);
 			
@@ -110,7 +109,7 @@ public class BaseURIStatInterceptor {
 		}
 	}
 
-	private String extractIpAdress() {
+	private String extractIpAddress() {
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
 		if (ipAddress == null) {
 			ipAddress = request.getRemoteAddr();
